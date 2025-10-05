@@ -3932,37 +3932,6 @@ local CreateInput = ui:Input({
     end
 })
 
-ui:Colorpicker({
-    Title = "背景颜色",
-    Default = Color3.fromHex(ThemeAccent),
-    Callback = function(color)
-        ThemeAccent = color:ToHex()
-    end
-})
-
-ui:Colorpicker({
-    Title = "边框颜色",
-    Default = Color3.fromHex(ThemeOutline),
-    Callback = function(color)
-        ThemeOutline = color:ToHex()
-    end
-})
-
-ui:Colorpicker({
-    Title = "文字颜色",
-    Default = Color3.fromHex(ThemeText),
-    Callback = function(color)
-        ThemeText = color:ToHex()
-    end
-})
-
-ui:Button({
-    Title = "更新ui",
-    Callback = function()
-        updateTheme()
-    end
-})
-
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
