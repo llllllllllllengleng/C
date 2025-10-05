@@ -1,0 +1,4678 @@
+LocalPlayer = game:GetService("Players").LocalPlayer
+Camera = workspace.CurrentCamera
+VirtualUser = game:GetService("VirtualUser")
+MarketplaceService = game:GetService("MarketplaceService")
+
+function GetCurrentVehicle()
+  return LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") and LocalPlayer.Character.Humanoid.SeatPart and LocalPlayer.Character.Humanoid.SeatPart.Parent
+end
+
+function TP(cframe)
+  GetCurrentVehicle():SetPrimaryPartCFrame(cframe)
+end
+
+function VelocityTP(cframe)
+  TeleportSpeed = math.random(600, 600)
+  Car = GetCurrentVehicle()
+  local BodyGyro = Instance.new("BodyGyro", Car.PrimaryPart)
+  BodyGyro.P = 5000
+  BodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+  BodyGyro.CFrame = Car.PrimaryPart.CFrame
+  local BodyVelocity = Instance.new("BodyVelocity", Car.PrimaryPart)
+  BodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+  BodyVelocity.Velocity = CFrame.new(Car.PrimaryPart.Position, cframe.p).LookVector * TeleportSpeed
+  wait((Car.PrimaryPart.Position - cframe.p).Magnitude / TeleportSpeed)
+  BodyVelocity.Velocity = Vector3.new()
+  wait(0.1)
+  BodyVelocity:Destroy()
+  BodyGyro:Destroy()
+end
+
+StartPosition = CFrame.new(Vector3.new(-34567.375, 34.895652770996094, -32846.046875), Vector3.new())
+EndPosition = CFrame.new(Vector3.new(-31448.3515625, 34.925010681152344, -26616.25), Vector3.new())
+AutoFarmFunc = coroutine.create(function()
+  while wait() do
+    if not AutoFarm then
+      AutoFarmRunning = false
+      coroutine.yield()
+    end
+    AutoFarmRunning = true
+    pcall(function()
+      if not GetCurrentVehicle() and tick() - (LastNotif or 0) > 5 then
+        LastNotif = tick()
+       else
+        TP(StartPosition + (TouchTheRoad and Vector3.new(0,-5,0) or Vector3.new(0, -5, 0)))
+        VelocityTP(EndPosition + (TouchTheRoad and Vector3.new(0,-5,0) or Vector3.new(0, -5, 0)))
+        TP(EndPosition + (TouchTheRoad and Vector3.new(0,-5,0) or Vector3.new(0, -5, 0)))
+        VelocityTP(StartPosition + (TouchTheRoad and Vector3.new(0,-5,0) or Vector3.new(0, -5, 0)))
+      end
+    end)
+  end
+end)
+
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+local Image = game:HttpGet("https://raw.githubusercontent.com/LENG8123/PICTURE/refs/heads/main/LENGPICTURE.jpg")
+
+WindUI:Localization({
+    Enabled = true,
+    Prefix = "loc:",
+    DefaultLanguage = "ru",
+    Translations = {
+        ["ru"] = {
+            ["WINDUI_EXAMPLE"] = "WindUI Пример",
+            ["WELCOME"] = "Добро пожаловать в WindUI!",
+            ["LIB_DESC"] = "Библиотека для создания красивых интерфейсов",
+            ["SETTINGS"] = "Настройки",
+            ["APPEARANCE"] = "Внешний вид",
+            ["FEATURES"] = "Функционал",
+            ["UTILITIES"] = "Инструменты",
+            ["UI_ELEMENTS"] = "UI Элементы",
+            ["CONFIGURATION"] = "Конфигурация",
+            ["SAVE_CONFIG"] = "Сохранить конфигурацию",
+            ["LOAD_CONFIG"] = "Загрузить конфигурацию",
+            ["THEME_SELECT"] = "Выберите тему",
+            ["TRANSPARENCY"] = "Прозрачность окна"
+        },
+        ["en"] = {
+            ["WINDUI_EXAMPLE"] = "WindUI Example",
+            ["WELCOME"] = "Welcome to WindUI!",
+            ["LIB_DESC"] = "Beautiful UI library for Roblox",
+            ["SETTINGS"] = "Settings",
+            ["APPEARANCE"] = "Appearance",
+            ["FEATURES"] = "Features",
+            ["UTILITIES"] = "Utilities",
+            ["UI_ELEMENTS"] = "UI Elements",
+            ["CONFIGURATION"] = "Configuration",
+            ["SAVE_CONFIG"] = "Save Configuration",
+            ["LOAD_CONFIG"] = "Load Configuration",
+            ["THEME_SELECT"] = "Select Theme",
+            ["TRANSPARENCY"] = "Window Transparency"
+        }
+    }
+})
+
+if not isfile("LENGPICTURE.jpg") then
+    writefile("LENGPICTURE.jpg", Image)
+end
+
+local Confirmed = false
+
+WindUI:Popup({
+    Title = "尊贵的"..game.Players.LocalPlayer.DisplayName.."用户",
+    Icon = "sparkles",
+    IconThemed = true,
+    Content = "欢迎使用此脚本",
+    Buttons = {
+        {
+            Title = "取消",
+            --Icon = "",
+            Callback = function() end,
+            Variant = "Secondary", -- Primary, Secondary, Tertiary
+        },
+        {
+            Title = "执行",
+            Icon = "arrow-right",
+            Callback = function() Confirmed = true end,
+            Variant = "Primary", -- Primary, Secondary, Tertiary
+        }
+    }
+})
+
+local Window =
+    WindUI:CreateWindow(
+    {
+        Title = "Action Script",
+        Icon = "rbxassetid://6026568198",
+        IconThemed = true,
+        Author = "by 冷",
+        Folder = "CloudHub",
+        Size = UDim2.fromOffset(300, 350), -- Increased size for new features
+        Transparent = true,
+        Theme = "Dark",
+        User = {
+            Enabled = true,
+            Callback = function()
+                print("clicked")
+            end,
+            Anonymous = false
+        },
+        SideBarWidth = 200,
+        ScrollBarEnabled = true,
+        Background = getcustomasset("LENGPICTURE.jpg")
+    }
+)
+
+
+Window:EditOpenButton({
+    Title = "打开脚本",
+    Icon = "star",
+    CornerRadius = UDim.new(0,16),
+    StrokeThickness = 2,
+    Color = ColorSequence.new(
+        Color3.fromHex("FF0F7B"),
+        Color3.fromHex("F89B29")
+    )
+})
+
+local MainSection = Window:Section({
+    Title = "功能收起",
+    Opened = true
+})
+
+local info = MainSection:Tab({Title = "主页", Icon = "rbxassetid://6026568198"})
+local Tab = MainSection:Tab({Title = "通用",Icon = "star"})
+local Aimbot = MainSection:Tab({Title = "自瞄",Icon = "star",})
+local range = MainSection:Tab({Title = "范围",Icon = "star",})
+local ESP = MainSection:Tab({Title = "ESP",Icon = "star",})
+local GIY = MainSection:Tab({Title = "画质光影",Icon = "star",})
+local FE = MainSection:Tab({Title = "FE",Icon = "star",})
+local music = MainSection:Tab({Title = "音乐",Icon = "star",})
+local ui = MainSection:Tab({Title = "UI设置",Icon = "star",})
+local LC = MainSection:Tab({Title = "自研",Icon = "star",})
+local drive = MainSection:Tab({Title = "主要功能",Icon = "star",})
+info:Paragraph({
+    Title = "欢迎使用 Action Script",
+    Desc = "这是一个付费的版本",
+    Image = "https://raw.githubusercontent.com/LENG8123/PICTURE/refs/heads/main/Background.jpg",
+    ImageSize = 50,
+    Thumbnail = "https://raw.githubusercontent.com/LENG8123/PICTURE/refs/heads/main/image_download_1759343540877.jpg",
+    ThumbnailSize = 130
+})
+
+Tab:Button({
+        Title = "通用",
+        Desc = "加载通用菜单",
+        Locked = false,
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            local StarterGui = game:GetService("StarterGui")
+            local RunService = game:GetService("RunService")
+            local TweenService = game:GetService("TweenService")
+            local UserInputService = game:GetService("UserInputService")
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Camera = game:GetService('Workspace').CurrentCamera
+
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Humanoid
+            local HumanoidRootPart
+
+            local function SafeDebugPrint(message)
+                print("[DEBUG] " .. message)
+            end
+
+            local function InitializeHumanoid()
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                if character then
+                    Humanoid = character:FindFirstChild("Humanoid")
+                    if Humanoid then
+                        HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if not HumanoidRootPart then
+                            SafeDebugPrint("HumanoidRootPart not found for " .. LocalPlayer.Name)
+                        else
+                            SafeDebugPrint("HumanoidRootPart initialized for " .. LocalPlayer.Name)
+                        end
+                    else
+                        SafeDebugPrint("Humanoid not found for " .. LocalPlayer.Name)
+                    end
+                end
+            end
+
+            if LocalPlayer.Character then
+                InitializeHumanoid()
+            end
+
+            LocalPlayer.CharacterAdded:Connect(InitializeHumanoid)
+
+            local kenConfiguration = {
+                Main = {
+                    Combat = {
+                        AttackAura = false,
+                        AutoParry = false
+                    },
+                    Farm = {
+                        KillFarm = false,
+                        AutoUltimate = true
+                    }
+                },
+                Player = {
+                    Character = {
+                        OverwriteProperties = false,
+                        WalkSpeed = 50,
+                        JumpPower = 50
+                    }
+                }
+            }
+
+            local Functions = {}
+
+            function Functions.BestTarget(MaxDistance)
+                MaxDistance = MaxDistance or math.huge
+                local Target = nil
+                local MinKills = math.huge
+
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+                        local rootPart = v.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                            local kills = v:GetAttribute("Kills") or 0
+
+                            if distance < MaxDistance and kills < MinKills then
+                                Target = v
+                                MaxDistance = distance
+                                MinKills = kills
+                            end
+                        end
+                    end
+                end
+
+                SafeDebugPrint("Best target found: " .. (Target and Target.Name or "None"))
+                return Target
+            end
+
+            function Functions.UseAbility(Ability)
+                if not LocalPlayer.Character then
+                    return
+                end
+                local Tool = LocalPlayer.Backpack:FindFirstChild(Ability)
+                if Tool then
+                    SafeDebugPrint("Using ability: " .. Ability)
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            Tool = Tool,
+                            Goal = "Console Move",
+                            ToolName = tostring(Ability)
+                        }
+                    )
+                else
+                    SafeDebugPrint("Ability not found: " .. Ability)
+                end
+            end
+
+            function Functions.RandomAbility()
+                if not LocalPlayer.PlayerGui:FindFirstChild("Hotbar") then
+                    return nil
+                end
+                local Hotbar = LocalPlayer.PlayerGui.Hotbar.Backpack.Hotbar
+                local Abilities = {}
+
+                for _, v in pairs(Hotbar:GetChildren()) do
+                    if v.ClassName ~= "UIListLayout" and v.Visible and v.Base.ToolName.Text ~= "N/A" and not v.Base:FindFirstChild("Cooldown") then
+                        table.insert(Abilities, v)
+                    end
+                end
+
+                if #Abilities > 0 then
+                    local RandomAbility = Abilities[math.random(1, #Abilities)]
+                    return RandomAbility.Base.ToolName.Text
+                else
+                    SafeDebugPrint("No available abilities")
+                    return nil
+                end
+            end
+
+            function Functions.ActivateUltimate()
+                local UltimateBar = LocalPlayer:GetAttribute("Ultimate") or 0
+                if UltimateBar >= 100 then
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            MoveDirection = Vector3.new(0, 0, 0),
+                            Key = Enum.KeyCode.G,
+                            Goal = "KeyPress"
+                        }
+                    )
+                    SafeDebugPrint("Ultimate activated")
+                else
+                    SafeDebugPrint("Ultimate not ready: " .. UltimateBar .. "%")
+                end
+            end
+
+            function Functions.TeleportUnderPlayer(player)
+                if not player.Character then
+                    return
+                end
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetCFrame = rootPart.CFrame * CFrame.new(0, -5, 0)
+                    LocalPlayer.Character:SetPrimaryPartCFrame(targetCFrame)
+                    SafeDebugPrint("Teleported under player: " .. player.Name)
+                else
+                    SafeDebugPrint("Failed to teleport under player: " .. player.Name)
+                end
+            end
+
+
+
+local Players = Tab:Dropdown({
+    Title = "选择玩家", 
+    Values = dropdown,
+    Value = "不处", 
+    Callback = function(v)
+    playernamedied = v
+end
+})
+
+game.Players.ChildAdded:Connect(function(player)
+    dropdown[player.UserId] = player.Name
+    Players:AddOption(player.Name)
+end)
+
+game.Players.ChildRemoved:Connect(function(player)
+    Players:RemoveOption(player.Name)
+    for k, v in pairs(dropdown) do
+        if v == player.Name then
+            dropdown[k] = nil
+        end
+    end
+end)
+
+Tab:Button({
+   Title = "传送到玩家旁边", 
+   Callback = function()
+    local HumRoot = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local tp_player = game.Players:FindFirstChild(LS.playernamedied)
+    if tp_player and tp_player.Character and tp_player.Character.HumanoidRootPart then
+        HumRoot.CFrame = tp_player.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        WindUI:Notify({
+    Title = "已经传送到玩家身边",
+    Content = "By 冷",
+    Duration = 5,
+})
+    else
+        WindUI:Notify({
+    Title = "无法传送 玩家已经消失",
+    Content = "By 冷",
+    Duration = 5,
+})
+    end
+end
+})
+
+Tab:Button({
+   Title = "把玩家传送过来", 
+   Callback = function()
+    local HumRoot = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local tp_player = game.Players:FindFirstChild(LS.playernamedied)
+    if tp_player and tp_player.Character and tp_player.Character.HumanoidRootPart then
+        tp_player.Character.HumanoidRootPart.CFrame = HumRoot.CFrame + Vector3.new(0, 3, 0)
+        WindUI:Notify({
+    Title = "已经传送过来",
+    Content = "By 冷",
+    Duration = 5,
+})
+    else
+        WindUI:Notify({
+    Title = "无法传送 玩家已消失",
+    Content = "By 冷",
+    Duration = 5,
+})
+    end
+end
+})
+
+Tab:Toggle({
+     Title = "查看玩家", 
+     Icon = "bird",
+     Type = "Checkbox",
+     Default = false, 
+     Callback = function(state)
+    if state then
+        game:GetService('Workspace').CurrentCamera.CameraSubject =
+            game:GetService('Players'):FindFirstChild(playernamedied).Character.Humanoid
+            WindUI:Notify({
+    Title = "已开启",
+    Content = "By 冷",
+    Duration = 5,
+})
+    else
+        WindUI:Notify({
+    Title = "已关闭",
+    Content = "By 冷",
+    Duration = 5,
+})
+        local lp = game.Players.LocalPlayer
+        game:GetService('Workspace').CurrentCamera.CameraSubject = lp.Character.Humanoid
+    end
+end
+})
+
+Tab:Button({
+   Title = "刷新列表", 
+   Callback = function()
+	shuaxinlb(true)
+	dropdown:SetOptions(REN["拓展表"]["传送到玩家身边"].dropdown)
+end
+})
+
+Tab:Button({
+     Title = "传送到玩家旁边",
+     Callback = function()  
+            tp(game:GetService("Players")[REN["拓展表"]["传送到玩家身边"].playernamedied].Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0))
+end
+})
+
+Tab:Slider({
+	Title = "移动速度修改",
+	Value = { Min = 0, Max = 500, Default = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed },
+	TextDisappear = true,
+	Callback = function(Value)
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+	end
+})
+Tab:Slider({
+	Title = "重力修改",
+	Value = { Min = 0, Max = 1000, Default = workspace.Gravity },
+	TextDisappear = true,
+	Callback = function(Value)
+		workspace.Gravity = Value
+	end
+})
+Tab:Slider({
+	Title = "跳跃高度修改",
+	Value = { Min = 0, Max = 500, Default = game.Players.LocalPlayer.Character.Humanoid.JumpPower },
+	TextDisappear = true,
+	Callback = function(Value)
+		game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+	end
+})
+
+Tab:Toggle({
+	Title = "无限跳跃",
+    Icon = "bird",
+    Type = "Checkbox",
+	Default = false,
+	Callback = function(s)
+    getgenv().InfJ = s
+    game:GetService("UserInputService").JumpRequest:connect(function()
+        if InfJ == true then
+            game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+        end
+    end)
+	end
+})
+
+Tab:Toggle({
+	Title = "死亡",
+    Icon = "bird",
+    Type = "Checkbox",
+	Default = false,
+	Callback = function(state)
+    if state then
+        game.Players.LocalPlayer.Character.Humanoid.Health=0
+        else
+        game.Players.LocalPlayer.Character.Humanoid.Health=100
+        end
+	end
+})
+
+Tab:Toggle({
+	Title = "穿墙",
+    Icon = "bird",
+    Type = "Checkbox",
+	Default = false,
+	Callback = function(state)
+local player = game.Players.LocalPlayer
+        local char = player.Character
+        local runService = game:GetService("RunService")
+        if state then
+            _G.NoClip = runService.Stepped:Connect(function()
+                for _, v in pairs(char:GetDescendants()) do
+                    if v:IsA("BasePart") then
+                        v.CanCollide = false
+                    end
+                end
+            end)
+        else
+            if _G.NoClip then
+                _G.NoClip:Disconnect()
+                _G.NoClip = nil
+            end
+            for _, v in pairs(char:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = true
+                end
+            end
+        end
+	end
+})
+
+Tab:Toggle({
+	Title = "不移动",
+    Icon = "bird",
+    Type = "Checkbox",
+	Default = false,
+	Callback = function(Value)
+    if Value then
+      game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
+    else
+      game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
+    end
+	end
+})
+
+Tab:Button ({
+	Title = "骂人无违规",
+	Callback = function ()
+loadstring(game:GetObjects("rbxassetid://1262435912")[1].Source)()
+	end
+})
+
+Tab:Button({
+	Title = "隐身道具",
+	Callback = function()
+     loadstring(game:HttpGet("https://gist.githubusercontent.com/skid123skidlol/cd0d2dce51b3f20ad1aac941da06a1a1/raw/f58b98cce7d51e53ade94e7bb460e4f24fb7e0ff/%257BFE%257D%2520Invisible%2520Tool%2520(can%2520hold%2520tools)",true))()
+  	end    
+})
+
+Tab:Button ({
+	Title = "万能工具箱",
+	Callback = function ()
+	 loadstring(game:HttpGet("https://cdn.wearedevs.net/scripts/BTools.txt"))()
+	end
+})
+
+Tab:Button ({
+	Title = "重新加入服务器",
+	Callback = function () 
+    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+	end
+})
+
+Tab:Button({
+	Title = "FPS加强",
+	Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/gclich/FPS-X-GUI/main/FPS_X.lua"))()
+  	end    
+})
+
+Tab:Button ({
+	Title = "玩家进入提示",
+	Callback = function ()
+	 loadstring(game:HttpGet("https://raw.githubusercontent.com/boyscp/scriscriptsc/main/bbn.lua"))()
+	end
+})
+
+Tab:Button({
+	Title = "死亡笔记",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/dingding123hhh/tt/main/%E6%AD%BB%E4%BA%A1%E7%AC%94%E8%AE%B0%20(1).txt"))()
+	end
+})
+
+Tab:Button({
+	Title = "伪名说话",
+	Callback = function()
+		loadstring(game:HttpGet(('https://pastefy.ga/zCFEwaYq/raw'),true))()
+	end
+})
+
+Tab:Button({
+	Title = "跟踪玩家",
+	Callback = function()
+		loadstring(game:HttpGet("https://pastebin.com/raw/F9PNLcXk"))()
+	end
+})
+
+Tab:Button({
+	Title = "反挂机V2",
+	Callback = function()
+		loadstring(game:HttpGet("https://pastebin.com/raw/9fFu43FF"))()
+	end
+})
+
+Tab:Button({
+	Title = "最强透视",
+	Callback = function()
+		loadstring(game:HttpGet("https://pastebin.com/raw/uw2P2fbY"))()
+	end
+})
+
+Tab:Button({
+	Title = "工具包",
+	Callback = function()
+		loadstring(game:HttpGet("https://cdn.wearedevs.net/scripts/BTools.txt"))()
+	end
+})
+
+Tab:Button({
+	Title = "查看游戏中所有玩家",
+	Callback = function()
+		loadstring(game:HttpGet(('https://pastebin.com/raw/G2zb992X'),true))()
+	end
+})
+
+Tab:Button({
+  Title = "铁拳",
+  Callback = function()  	
+  loadstring(game:HttpGet('https://raw.githubusercontent.com/0Ben1/fe/main/obf_rf6iQURzu1fqrytcnLBAvW34C9N55kS9g9G3CKz086rC47M6632sEd4ZZYB0AYgV.lua.txt'))()
+   end
+})
+
+Tab:Button({
+	Title = "吸取全部玩家",
+	Callback = function()
+     loadstring(game:HttpGet('https://pastebin.com/raw/hQSBGsw2'))()
+  	end    
+})
+
+Tab:Button({
+	Title = "隐身道具",
+	Callback = function()
+		loadstring(game:HttpGet("https://gist.githubusercontent.com/skid123skidlol/cd0d2dce51b3f20ad1aac941da06a1a1/raw/f58b98cce7d51e53ade94e7bb460e4f24fb7e0ff/%257BFE%257D%2520Invisible%2520Tool%2520(can%2520hold%2520tools)",true))()
+	end
+})
+
+Tab:Button({
+	Title = "自动互动",
+	Callback = function()
+		if state then
+            autoInteract = true
+            while autoInteract do
+                for _, descendant in pairs(workspace:GetDescendants()) do
+                    if descendant:IsA("ProximityPrompt") then
+                        fireproximityprompt(descendant)
+                    end
+                end
+                task.wait(0.25)
+            end
+        else
+            autoInteract = false
+        end
+	end
+})
+
+Tab:Button ({
+	Title = "玩家进来看得见",
+	Callback = function ()
+	 loadstring(game:HttpGet("https://raw.githubusercontent.com/boyscp/scriscriptsc/main/bbn.lua"))()
+	end
+})
+
+Tab:Button({
+	Title = "点击传送工具",
+	Callback = function()
+mouse = game.Players.LocalPlayer:GetMouse() tool = Instance.new("Tool") tool.RequiresHandle = false tool.Name = "工具 点击传送" tool.Activated:connect(function() local pos = mouse.Hit+Vector3.new(0,2.5,0) pos = CFrame.new(pos.X,pos.Y,pos.Z) game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos end) tool.Parent = game.Players.LocalPlayer.Backpack
+	end
+})
+
+Tab:Button({
+	Title = "电脑键盘",
+	Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/advxzivhsjjdhxhsidifvsh/mobkeyboard/main/main.txt", true))()
+  	end    
+})
+
+Tab:Button({
+	Title = "踏空行走",
+	Callback = function()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/main/Float'))()
+	end
+})
+
+Tab:Button({ 
+	Title = "动态模糊",
+	Callback = function()
+       	local camera = workspace.CurrentCamera
+local blurAmount = 10
+local blurAmplifier = 5
+local lastVector = camera.CFrame.LookVector
+
+local motionBlur = Instance.new("BlurEffect", camera)
+
+local runService = game:GetService("RunService")
+
+workspace.Changed:Connect(function(property)
+ if property == "CurrentCamera" then
+  print("Changed")
+  local camera = workspace.CurrentCamera
+  if motionBlur and motionBlur.Parent then
+   motionBlur.Parent = camera
+  else
+   motionBlur = Instance.new("BlurEffect", camera)
+  end
+ end
+end)
+
+runService.Heartbeat:Connect(function()
+ if not motionBlur or motionBlur.Parent == nil then
+  motionBlur = Instance.new("BlurEffect", camera)
+ end
+ 
+ local magnitude = (camera.CFrame.LookVector - lastVector).magnitude
+ motionBlur.Size = math.abs(magnitude)*blurAmount*blurAmplifier/2
+ lastVector = camera.CFrame.LookVector
+end)
+  	end
+})
+
+Tab:Button({
+	Title = "infiniteyield指令",
+	Callback = function()
+loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
+  	end
+})
+
+Tab:Button({
+    Title = "高亮永不会掉",
+    Callback=function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/4LDKiJ5a"))()
+    end
+})
+
+Tab:Button({
+    Title = "动作",
+    Callback=function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/Zj4NnKs6"))()
+    end
+})
+
+Tab:Button({
+	Title = "防止掉线（反挂机）",
+	Callback = function()
+	wait(2)
+	print("Anti Afk On")
+		local vu = game:GetService("VirtualUser")
+		game:GetService("Players").LocalPlayer.Idled:connect(function()
+		   vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		   wait(1)
+		   vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		end)
+	local CoreGui = game:GetService("StarterGui")
+CoreGui:SetCore("SendNotification", {
+    Title = "提示10秒",
+    Text = "防挂机已开启",
+    Duration = 10,
+})
+  	end
+})
+
+Tab:Button({
+	Title = "甩飞人《封号风险》",
+	Callback = function()
+     loadstring(game:HttpGet('https://pastebin.com/raw/dFsFLk3C'))()
+  	end    
+})
+
+Tab:Button({
+	Title = "甩人",
+	Callback = function()
+     loadstring(game:HttpGet("https://pastebin.com/raw/zqyDSUWX"))()
+  	end    
+})
+
+Tab:Button({
+    Title = "飞车",
+    Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/odhdshhe/-V2.0/refs/heads/main/%E5%86%B7%E9%A3%9E%E8%BD%A6%E6%BA%90%E7%A0%81.txt"))()
+end
+})
+
+Tab:Button({
+       Title = "飞行v1",
+       Callback = function()
+loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\34\104\116\116\112\115\58\47\47\112\97\115\116\101\98\105\110\46\99\111\109\47\114\97\119\47\90\66\122\99\84\109\49\102\34\41\41\40\41\10")()
+end
+})
+
+Tab:Button({
+      Title = "冷飞行",
+      Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/odhdshhe/-V3.0/refs/heads/main/%E9%A3%9E%E8%A1%8C%E8%84%9A%E6%9C%ACV3(%E5%85%A8%E6%B8%B8%E6%88%8F%E9%80%9A%E7%94%A8)%20(1).txt"))()
+end
+})
+
+Tab:Button ({
+	Title = "阿尔宙斯飞行",
+	Callback = function ()
+	 loadstring(game:HttpGet("https://pastebin.com/raw/5zJu3hfN"))()
+	end
+})
+
+Tab:Toggle({
+	Title = "防甩飞",
+    Icon = "bird",
+    Type = "Checkbox",
+	Default = false,
+	Callback = function(state)
+        local player = game.Players.LocalPlayer
+        local char = player.Character
+        local runService = game:GetService("RunService")
+        if state then
+            _G.NoClip = runService.Stepped:Connect(function()
+                for _, v in pairs(char:GetDescendants()) do
+                    if v:IsA("BasePart") then
+                        v.CanCollide = false
+                    end
+                end
+            end)
+        else
+            if _G.NoClip then
+                _G.NoClip:Disconnect()
+                _G.NoClip = nil
+            end
+            for _, v in pairs(char:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = true
+                end
+            end
+        end
+	end
+})
+end
+})
+
+------------------------------------自瞄---------------------------------
+
+local bin = {
+    fovsize = 20,
+    fovlookAt = false,
+    fovcolor = Color3.fromRGB(255, 255, 255),
+    fovthickness = 2,
+    Visible = false,
+    distance = 40,
+    ViewportSize = 2,
+    Transparency = 1,
+    Position = "Head",
+    teamCheck = false,
+    wallCheck = false,
+    aliveCheck = false,
+    prejudgingselfsighting = false,
+    prejudgingselfsightingdistance = 0
+}
+
+local colorMap = {
+    ["红色"] = Color3.fromRGB(255, 0, 0),
+    ["蓝色"] = Color3.fromRGB(0, 0, 255),
+    ["黄色"] = Color3.fromRGB(255, 255, 0),
+    ["绿色"] = Color3.fromRGB(0, 255, 0),
+    ["青色"] = Color3.fromRGB(0, 255, 255),
+    ["橙色"] = Color3.fromRGB(255, 165, 0),
+    ["紫色"] = Color3.fromRGB(128, 0, 128),
+    ["白色"] = Color3.fromRGB(255, 255, 255),
+    ["黑色"] = Color3.fromRGB(0, 0, 0)
+}
+
+local partMap = {
+    ["头部"] = "Head",
+    ["脖子"] = "HumanoidRootPart",
+    ["躯干"] = "Torso",
+    ["左臂"] = "Left Arm",
+    ["右臂"] = "Right Arm",
+    ["左腿"] = "Left Leg",
+    ["右腿"] = "Right Leg",
+    ["左手"] = "LeftHand",
+    ["右手"] = "RightHand",
+    ["左小臂"] = "LeftLowerArm",
+    ["右小臂"] = "RightLowerArm",
+    ["左大臂"] = "LeftUpperArm",
+    ["右大臂"] = "RightUpperArm",
+    ["左脚"] = "LeftFoot",
+    ["左小腿"] = "LeftLowerLeg",
+    ["上半身"] = "UpperTorso",
+    ["左大腿"] = "LeftUpperLeg",
+    ["右脚"] = "RightFoot",
+    ["右小腿"] = "RightLowerLeg",
+    ["下半身"] = "LowerTorso",
+    ["右大腿"] = "RightUpperLeg"
+}
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+local Cam = workspace.CurrentCamera
+
+local FOVring = nil
+local playerPositions = {}
+local renderConnection = nil
+local inputConnection = nil
+
+local function isEnemy(player)
+    if not bin.teamCheck then return true end
+    if not player.Team or not LocalPlayer.Team then return true end
+    return player.Team ~= LocalPlayer.Team
+end
+
+local function isWallBetween(player, targetPartName)
+    if not bin.wallCheck then return false end
+    
+    local targetCharacter = player.Character
+    if not targetCharacter then return false end
+
+    local targetPart = targetCharacter:FindFirstChild(targetPartName)
+    if not targetPart then return false end
+
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterDescendantsInstances = {LocalPlayer.Character or workspace}
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+    
+    local rayOrigin = Cam.CFrame.Position
+    local rayDirection = (targetPart.Position - rayOrigin).Unit * bin.distance
+    local raycastResult = workspace:Raycast(rayOrigin, rayDirection, raycastParams)
+    
+    return raycastResult and not raycastResult.Instance:IsDescendantOf(targetCharacter)
+end
+
+local function isAlive(player)
+    if not bin.aliveCheck then return true end
+    local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+    return humanoid and humanoid.Health > 0
+end
+
+local function createFOV()
+    if FOVring then FOVring:Remove() end
+
+    FOVring = Drawing.new("Circle")
+    FOVring.Visible = bin.Visible
+    FOVring.Thickness = bin.fovthickness
+    FOVring.Color = bin.fovcolor
+    FOVring.Filled = false
+    FOVring.Radius = bin.fovsize
+    FOVring.Transparency = 1 - (bin.Transparency / 10)
+
+    local function updateDrawings()
+        if not FOVring then return end
+        FOVring.Position = Cam.ViewportSize / 2
+        FOVring.Visible = bin.Visible
+    end
+
+    local function smoothAim(target)
+        local currentCFrame = Cam.CFrame
+        local lookVector = (target - currentCFrame.Position).Unit
+        local targetCFrame = CFrame.new(currentCFrame.Position, currentCFrame.Position + lookVector)
+        Cam.CFrame = currentCFrame:Lerp(targetCFrame, 0.7)
+    end
+
+    local function predictPosition(player, targetPartName)
+        if not bin.prejudgingselfsighting or bin.prejudgingselfsightingdistance <= 0 then
+            local part = player.Character and player.Character:FindFirstChild(targetPartName)
+            return part and part.Position
+        end
+
+        if not playerPositions[player] or #playerPositions[player] < 2 then
+            local part = player.Character and player.Character:FindFirstChild(targetPartName)
+            return part and part.Position
+        end
+
+        local positions = playerPositions[player]
+        local velocity = (positions[#positions] - positions[1]) / (#positions * 0.2)
+        local part = player.Character:FindFirstChild(targetPartName)
+        return part and (part.Position + velocity * bin.prejudgingselfsightingdistance * 0.1)
+    end
+
+    local function findClosestTarget()
+        local closestPlayer, closestDistance = nil, math.huge
+        local screenCenter = Cam.ViewportSize / 2
+
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player == LocalPlayer then continue end
+            
+            if isEnemy(player) and isAlive(player) then
+                local character = player.Character
+                if character then
+                    local targetPart = character:FindFirstChild(bin.Position)
+                    if targetPart then
+                        local screenPos, onScreen = Cam:WorldToViewportPoint(targetPart.Position)
+                        if onScreen then
+                            local distance = (Vector2.new(screenPos.X, screenPos.Y) - screenCenter).Magnitude
+                            
+                            if distance <= bin.fovsize and distance <= bin.distance and distance < closestDistance then
+                                if not isWallBetween(player, bin.Position) then
+                                    closestDistance = distance
+                                    closestPlayer = player
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        return closestPlayer
+    end
+
+    local function trackPlayerPositions()
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                local rootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    playerPositions[player] = playerPositions[player] or {}
+                    table.insert(playerPositions[player], rootPart.Position)
+                    
+                    if #playerPositions[player] > 5 then
+                        table.remove(playerPositions[player], 1)
+                    end
+                end
+            end
+        end
+    end
+
+    if renderConnection then renderConnection:Disconnect() end
+    if inputConnection then inputConnection:Disconnect() end
+
+    renderConnection = RunService.RenderStepped:Connect(function()
+        updateDrawings()
+        
+        if bin.prejudgingselfsighting then
+            trackPlayerPositions()
+        end
+        
+        if bin.fovlookAt then
+            local targetPlayer = findClosestTarget()
+            if targetPlayer and targetPlayer.Character then
+                local predictedPosition = predictPosition(targetPlayer, bin.Position)
+                if predictedPosition then
+                    smoothAim(predictedPosition)
+                end
+            end
+        end
+    end)
+
+    inputConnection = UserInputService.InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.Delete then
+            destroyFOV()
+        end
+    end)
+end
+
+local function destroyFOV()
+    if renderConnection then
+        renderConnection:Disconnect()
+        renderConnection = nil
+    end
+    
+    if inputConnection then
+        inputConnection:Disconnect()
+        inputConnection = nil
+    end
+    
+    if FOVring then
+        FOVring:Remove()
+        FOVring = nil
+    end
+    
+    table.clear(playerPositions)
+end
+
+local function updateFOV()
+    if not FOVring then return end
+    
+    FOVring.Thickness = bin.fovthickness
+    FOVring.Radius = bin.fovsize
+    FOVring.Color = bin.fovcolor
+    FOVring.Transparency = 1 - (bin.Transparency / 10)
+    FOVring.Visible = bin.Visible
+end
+
+Aimbot:Button({
+        Title = "自瞄",
+        Desc = "加载自瞄菜单",
+        Locked = false,
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            local StarterGui = game:GetService("StarterGui")
+            local RunService = game:GetService("RunService")
+            local TweenService = game:GetService("TweenService")
+            local UserInputService = game:GetService("UserInputService")
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Camera = game:GetService('Workspace').CurrentCamera
+
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Humanoid
+            local HumanoidRootPart
+
+            local function SafeDebugPrint(message)
+                print("[DEBUG] " .. message)
+            end
+
+            local function InitializeHumanoid()
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                if character then
+                    Humanoid = character:FindFirstChild("Humanoid")
+                    if Humanoid then
+                        HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if not HumanoidRootPart then
+                            SafeDebugPrint("HumanoidRootPart not found for " .. LocalPlayer.Name)
+                        else
+                            SafeDebugPrint("HumanoidRootPart initialized for " .. LocalPlayer.Name)
+                        end
+                    else
+                        SafeDebugPrint("Humanoid not found for " .. LocalPlayer.Name)
+                    end
+                end
+            end
+
+            if LocalPlayer.Character then
+                InitializeHumanoid()
+            end
+
+            LocalPlayer.CharacterAdded:Connect(InitializeHumanoid)
+
+            local kenConfiguration = {
+                Main = {
+                    Combat = {
+                        AttackAura = false,
+                        AutoParry = false
+                    },
+                    Farm = {
+                        KillFarm = false,
+                        AutoUltimate = true
+                    }
+                },
+                Player = {
+                    Character = {
+                        OverwriteProperties = false,
+                        WalkSpeed = 50,
+                        JumpPower = 50
+                    }
+                }
+            }
+
+            local Functions = {}
+
+            function Functions.BestTarget(MaxDistance)
+                MaxDistance = MaxDistance or math.huge
+                local Target = nil
+                local MinKills = math.huge
+
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+                        local rootPart = v.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                            local kills = v:GetAttribute("Kills") or 0
+
+                            if distance < MaxDistance and kills < MinKills then
+                                Target = v
+                                MaxDistance = distance
+                                MinKills = kills
+                            end
+                        end
+                    end
+                end
+
+                SafeDebugPrint("Best target found: " .. (Target and Target.Name or "None"))
+                return Target
+            end
+
+            function Functions.UseAbility(Ability)
+                if not LocalPlayer.Character then
+                    return
+                end
+                local Tool = LocalPlayer.Backpack:FindFirstChild(Ability)
+                if Tool then
+                    SafeDebugPrint("Using ability: " .. Ability)
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            Tool = Tool,
+                            Goal = "Console Move",
+                            ToolName = tostring(Ability)
+                        }
+                    )
+                else
+                    SafeDebugPrint("Ability not found: " .. Ability)
+                end
+            end
+
+            function Functions.RandomAbility()
+                if not LocalPlayer.PlayerGui:FindFirstChild("Hotbar") then
+                    return nil
+                end
+                local Hotbar = LocalPlayer.PlayerGui.Hotbar.Backpack.Hotbar
+                local Abilities = {}
+
+                for _, v in pairs(Hotbar:GetChildren()) do
+                    if v.ClassName ~= "UIListLayout" and v.Visible and v.Base.ToolName.Text ~= "N/A" and not v.Base:FindFirstChild("Cooldown") then
+                        table.insert(Abilities, v)
+                    end
+                end
+
+                if #Abilities > 0 then
+                    local RandomAbility = Abilities[math.random(1, #Abilities)]
+                    return RandomAbility.Base.ToolName.Text
+                else
+                    SafeDebugPrint("No available abilities")
+                    return nil
+                end
+            end
+
+            function Functions.ActivateUltimate()
+                local UltimateBar = LocalPlayer:GetAttribute("Ultimate") or 0
+                if UltimateBar >= 100 then
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            MoveDirection = Vector3.new(0, 0, 0),
+                            Key = Enum.KeyCode.G,
+                            Goal = "KeyPress"
+                        }
+                    )
+                    SafeDebugPrint("Ultimate activated")
+                else
+                    SafeDebugPrint("Ultimate not ready: " .. UltimateBar .. "%")
+                end
+            end
+
+            function Functions.TeleportUnderPlayer(player)
+                if not player.Character then
+                    return
+                end
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetCFrame = rootPart.CFrame * CFrame.new(0, -5, 0)
+                    LocalPlayer.Character:SetPrimaryPartCFrame(targetCFrame)
+                    SafeDebugPrint("Teleported under player: " .. player.Name)
+                else
+                    SafeDebugPrint("Failed to teleport under player: " .. player.Name)
+                end
+            end
+
+
+
+Aimbot:Toggle({
+    Title = "显示圈圈自瞄",
+    Description = "open/close",
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false,
+    Callback = function(state)
+        bin.Visible = state
+        if state then
+            createFOV()
+        else
+            destroyFOV()
+        end
+    end
+})
+
+Aimbot:Toggle({
+    Title = "开启/关闭自瞄",
+    Description = "open/close",
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false,
+    Callback = function(state)
+        bin.fovlookAt = state
+    end
+})
+
+Aimbot:Slider({
+    Title = "圈圈自瞄厚度",
+    Description = "thickness",
+    Min = 0,
+    Max = 10,
+    Default = 2,
+    Callback = function(value)
+        bin.fovthickness = value
+        updateFOV()
+    end
+})
+
+Aimbot:Slider({
+    Title = "圈圈自瞄大小",
+    Description = "Size",
+    Min = 0,
+    Max = 100,
+    Default = 20,
+    Callback = function(value)
+        bin.fovsize = value
+        updateFOV()
+    end
+})
+
+Aimbot:Slider({
+    Title = "圈圈自瞄透明度",
+    Description = "Transparency",
+    Min = 0,
+    Max = 10,
+    Default = 1,
+    Callback = function(value)
+        bin.Transparency = value
+        updateFOV()
+    end
+})
+
+Aimbot:Slider({
+    Title = "圈圈自瞄距离",
+    Description = "distance",
+    Min = 10,
+    Max = 500,
+    Default = 40,
+    Callback = function(value)
+        bin.distance = value
+    end
+})
+
+Aimbot:Dropdown({
+    Title = "圈圈自瞄颜色",
+    Description = "Dropdown",
+    Values = {"红色", "蓝色", "黄色", "绿色", "青色", "橙色", "紫色", "白色", "黑色"},
+    Value = "白色",
+    Callback = function(value)
+        bin.fovcolor = colorMap[value]
+        updateFOV()
+    end
+})
+
+Aimbot:Dropdown({
+    Title = "选择自瞄部位",
+    Description = "Dropdown",
+    Values = {"头部", "脖子", "躯干", "左臂", "右臂", "左腿", "右腿", "左手", "右手", "左小臂", "右小臂", "左大臂", "右大臂", "左脚", "左小腿", "上半身", "左大腿", "右脚", "右小腿", "下半身", "右大腿"},
+    Value = "头部",
+    Callback = function(Value)
+        bin.Position = partMap[Value]
+    end
+})
+
+Aimbot:Toggle({
+    Title = "队伍检测",
+    Description = "Enable/Disable Team Check",
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false,
+    Callback = function(state)
+        bin.teamCheck = state
+    end
+})
+
+Aimbot:Toggle({
+    Title = "活体检测",
+    Description = "Alive Check",
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false,
+    Callback = function(state)
+        bin.aliveCheck = state
+    end
+})
+
+Aimbot:Toggle({
+    Title = "墙壁检测",
+    Description = "Enable/Disable Wall Check",
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false,
+    Callback = function(state)
+        bin.wallCheck = state
+    end
+})
+
+Aimbot:Toggle({
+    Title = "预判自瞄",
+    Description = "prejudging self-sighting",
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false,
+    Callback = function(state)
+        bin.prejudgingselfsighting = state
+    end
+})
+
+Aimbot:Slider({
+    Title = "预判距离",
+    Description = "distance",
+    Min = 10,
+    Max = 500,
+    Default = 40,
+    Callback = function(value)
+        bin.prejudgingselfsightingdistance = value
+    end
+})
+Aimbot:Button({
+       Title = "宙斯自瞄",
+       Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/chillz-workshop/main/Arceus%20Aimbot.lua"))()
+end
+})
+
+Aimbot:Button({
+      Title = "英文自瞄",
+      Callback = function()
+loadstring(game:HttpGet("https://rentry.co/n55gmtpi/raw", true))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄50",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/b3uXjRF6/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄100",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/tQrd2r0L/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄150",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/UOQWFvGp/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄200",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/b5CuDuer/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄250",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/p2huH7eF/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄300",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/nIyVhrvV/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄350",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/pnjKHMvV/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄400",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/LQuP7sjj/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄600",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/WmcEe2HB/raw",false))()
+end
+})
+
+Aimbot:Button({
+        Title = "自瞄全屏",
+        Callback = function()
+loadstring(game:HttpGet("https://pastefy.app/n5LhGGgf/raw",false))()
+end
+})
+
+Aimbot:Button({
+      Title = "阿尔子追",
+      Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/dingding123hhh/sgbs/main/%E4%B8%81%E4%B8%81%20%E6%B1%89%E5%8C%96%E8%87%AA%E7%9E%84.txt"))()
+end
+})
+
+Aimbot:Button({
+      Title = "俄州子追",
+      Callback = function()
+loadstring(game:HttpGet("https://gist.githubusercontent.com/ClasiniZukov/e7547e7b48fa90d10eb7f85bd3569147/raw/f95cd3561a3bb3ac6172a14eb74233625b52e757/gistfile1.txt"))()
+end
+})
+end
+})
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+getgenv().HitboxConfig = {
+    Size = 15,
+    Transparency = 0.9,
+    Active = false,
+    TeamCheck = false,
+    Color = "红色",
+    DefaultSize = Vector3.new(2, 2, 1),
+    DefaultTransparency = 1,
+    DefaultMaterial = "Plastic",
+    UpdateInterval = 0.1
+}
+
+local ColorMap = {
+    ["红色"] = Color3.fromRGB(255, 0, 0),
+    ["蓝色"] = Color3.fromRGB(0, 0, 255),
+    ["黄色"] = Color3.fromRGB(255, 255, 0),
+    ["绿色"] = Color3.fromRGB(0, 255, 0),
+    ["青色"] = Color3.fromRGB(0, 255, 255),
+    ["橙色"] = Color3.fromRGB(255, 165, 0),
+    ["紫色"] = Color3.fromRGB(128, 0, 128),
+    ["白色"] = Color3.fromRGB(255, 255, 255),
+    ["黑色"] = Color3.fromRGB(0, 0, 0)
+}
+
+local playerCharacters = {}
+local heartbeatConnection = nil
+
+local function onCharacterAdded(player, character)
+    playerCharacters[player] = character
+    
+    local humanoid = character:WaitForChild("Humanoid")
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+   
+    if not getgenv().HitboxConfig.Active then
+        rootPart.Size = HitboxConfig.DefaultSize
+        rootPart.Transparency = HitboxConfig.DefaultTransparency
+        rootPart.Material = HitboxConfig.DefaultMaterial
+        rootPart.CanCollide = false
+    end
+end
+
+local function onPlayerAdded(player)
+    player.CharacterAdded:Connect(function(character)
+        onCharacterAdded(player, character)
+    end)
+    if player.Character then
+        task.spawn(onCharacterAdded, player, player.Character)
+    end
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+    task.spawn(onPlayerAdded, player)
+end
+Players.PlayerAdded:Connect(onPlayerAdded)
+
+local function UpdateHitboxes()
+    for player, character in pairs(playerCharacters) do
+        if player == Players.LocalPlayer then continue end
+        
+        if getgenv().HitboxConfig.TeamCheck and player.Team == Players.LocalPlayer.Team then
+            continue 
+        end
+
+        pcall(function()
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if not rootPart then return end
+
+            if getgenv().HitboxConfig.Active then
+                rootPart.Size = Vector3.new(HitboxConfig.Size, HitboxConfig.Size, HitboxConfig.Size)
+                rootPart.Transparency = HitboxConfig.Transparency
+                rootPart.Color = ColorMap[HitboxConfig.Color] or Color3.fromRGB(255, 0, 0)
+                rootPart.Material = "Neon"
+                rootPart.CanCollide = false
+            else
+                rootPart.Size = HitboxConfig.DefaultSize
+                rootPart.Transparency = HitboxConfig.DefaultTransparency
+                rootPart.Material = HitboxConfig.DefaultMaterial
+                rootPart.CanCollide = false
+            end
+        end)
+    end
+end
+
+range:Button({
+        Title = "范围",
+        Desc = "加载范围菜单",
+        Locked = false,
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            local StarterGui = game:GetService("StarterGui")
+            local RunService = game:GetService("RunService")
+            local TweenService = game:GetService("TweenService")
+            local UserInputService = game:GetService("UserInputService")
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Camera = game:GetService('Workspace').CurrentCamera
+
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Humanoid
+            local HumanoidRootPart
+
+            local function SafeDebugPrint(message)
+                print("[DEBUG] " .. message)
+            end
+
+            local function InitializeHumanoid()
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                if character then
+                    Humanoid = character:FindFirstChild("Humanoid")
+                    if Humanoid then
+                        HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if not HumanoidRootPart then
+                            SafeDebugPrint("HumanoidRootPart not found for " .. LocalPlayer.Name)
+                        else
+                            SafeDebugPrint("HumanoidRootPart initialized for " .. LocalPlayer.Name)
+                        end
+                    else
+                        SafeDebugPrint("Humanoid not found for " .. LocalPlayer.Name)
+                    end
+                end
+            end
+
+            if LocalPlayer.Character then
+                InitializeHumanoid()
+            end
+
+            LocalPlayer.CharacterAdded:Connect(InitializeHumanoid)
+
+            local kenConfiguration = {
+                Main = {
+                    Combat = {
+                        AttackAura = false,
+                        AutoParry = false
+                    },
+                    Farm = {
+                        KillFarm = false,
+                        AutoUltimate = true
+                    }
+                },
+                Player = {
+                    Character = {
+                        OverwriteProperties = false,
+                        WalkSpeed = 50,
+                        JumpPower = 50
+                    }
+                }
+            }
+
+            local Functions = {}
+
+            function Functions.BestTarget(MaxDistance)
+                MaxDistance = MaxDistance or math.huge
+                local Target = nil
+                local MinKills = math.huge
+
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+                        local rootPart = v.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                            local kills = v:GetAttribute("Kills") or 0
+
+                            if distance < MaxDistance and kills < MinKills then
+                                Target = v
+                                MaxDistance = distance
+                                MinKills = kills
+                            end
+                        end
+                    end
+                end
+
+                SafeDebugPrint("Best target found: " .. (Target and Target.Name or "None"))
+                return Target
+            end
+
+            function Functions.UseAbility(Ability)
+                if not LocalPlayer.Character then
+                    return
+                end
+                local Tool = LocalPlayer.Backpack:FindFirstChild(Ability)
+                if Tool then
+                    SafeDebugPrint("Using ability: " .. Ability)
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            Tool = Tool,
+                            Goal = "Console Move",
+                            ToolName = tostring(Ability)
+                        }
+                    )
+                else
+                    SafeDebugPrint("Ability not found: " .. Ability)
+                end
+            end
+
+            function Functions.RandomAbility()
+                if not LocalPlayer.PlayerGui:FindFirstChild("Hotbar") then
+                    return nil
+                end
+                local Hotbar = LocalPlayer.PlayerGui.Hotbar.Backpack.Hotbar
+                local Abilities = {}
+
+                for _, v in pairs(Hotbar:GetChildren()) do
+                    if v.ClassName ~= "UIListLayout" and v.Visible and v.Base.ToolName.Text ~= "N/A" and not v.Base:FindFirstChild("Cooldown") then
+                        table.insert(Abilities, v)
+                    end
+                end
+
+                if #Abilities > 0 then
+                    local RandomAbility = Abilities[math.random(1, #Abilities)]
+                    return RandomAbility.Base.ToolName.Text
+                else
+                    SafeDebugPrint("No available abilities")
+                    return nil
+                end
+            end
+
+            function Functions.ActivateUltimate()
+                local UltimateBar = LocalPlayer:GetAttribute("Ultimate") or 0
+                if UltimateBar >= 100 then
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            MoveDirection = Vector3.new(0, 0, 0),
+                            Key = Enum.KeyCode.G,
+                            Goal = "KeyPress"
+                        }
+                    )
+                    SafeDebugPrint("Ultimate activated")
+                else
+                    SafeDebugPrint("Ultimate not ready: " .. UltimateBar .. "%")
+                end
+            end
+
+            function Functions.TeleportUnderPlayer(player)
+                if not player.Character then
+                    return
+                end
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetCFrame = rootPart.CFrame * CFrame.new(0, -5, 0)
+                    LocalPlayer.Character:SetPrimaryPartCFrame(targetCFrame)
+                    SafeDebugPrint("Teleported under player: " .. player.Name)
+                else
+                    SafeDebugPrint("Failed to teleport under player: " .. player.Name)
+                end
+            end
+
+
+
+range:Toggle({
+     Title = "开启/关闭范围", 
+     Description = "HitboxStatus", 
+     Icon = "bird",
+     Type = "Checkbox",
+     Default = false, 
+     Callback = function(state)
+    getgenv().HitboxConfig.Active = state
+
+    if heartbeatConnection then
+        heartbeatConnection:Disconnect()
+        heartbeatConnection = nil
+    end
+
+    if state then
+        heartbeatConnection = RunService.Heartbeat:Connect(function()
+            UpdateHitboxes()
+            task.wait(HitboxConfig.UpdateInterval)
+        end)
+        UpdateHitboxes()
+    else
+        UpdateHitboxes()
+    end
+end
+})
+
+range:Input({
+      Title = "范围大小设置",
+      Callback =  function(value)
+    local num = tonumber(value)
+    if num and num > 0 then
+        getgenv().HitboxConfig.Size = num
+        if getgenv().HitboxConfig.Active then
+            UpdateHitboxes()
+        end
+    end
+end
+})
+
+range:Input({
+     Title = "范围透明度设置(0-1)",
+     Callback =  function(value)
+    local num = tonumber(value)
+    if num and num >= 0 and num <= 1 then
+        getgenv().HitboxConfig.Transparency = num
+        if getgenv().HitboxConfig.Active then
+            UpdateHitboxes()
+        end
+    end
+end
+})
+
+range:Toggle({
+     Title = "队伍检测", 
+     Description = "TeamCheck",
+     Icon = "bird",
+     Type = "Checkbox", 
+     Default = false, 
+     Callback = function(state)
+    getgenv().HitboxConfig.TeamCheck = state
+    if getgenv().HitboxConfig.Active then
+        UpdateHitboxes()
+    end
+end
+})
+
+range:Dropdown({
+     Title = "选择范围颜色", 
+     Description = "HitboxColor", 
+     Values = {"红色","蓝色","黄色","绿色","青色","橙色","紫色","白色","黑色"}, 
+     Callback = function(value)
+    if ColorMap[value] then
+        getgenv().HitboxConfig.Color = value
+        if getgenv().HitboxConfig.Active then
+            UpdateHitboxes()
+        end
+    end
+end
+})
+
+range:Button({
+     Title = "范围",
+     Callback = function()
+    _G.HeadSize = 15
+_G.Disabled = true
+
+game:GetService('RunService').RenderStepped:connect(function()
+if _G.Disabled then
+for i,v in next, game:GetService('Players'):GetPlayers() do
+if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+pcall(function()
+v.Character.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
+v.Character.HumanoidRootPart.Transparency = 0.7
+v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Really blue")
+v.Character.HumanoidRootPart.Material = "Neon"
+v.Character.HumanoidRootPart.CanCollide = false
+end)
+end
+end
+end
+end)
+end
+})
+
+range:Input({
+     Title = "自定义范围",
+     Callback =  function(Value)
+   _G.HeadSize = Value
+    _G.Disabled = true 
+   game:GetService('RunService').RenderStepped:connect(function()
+    if _G.Disabled then
+    for i,v in next, game:GetService('Players'):GetPlayers() do
+    if v.Name ~= game:GetService('Players').LocalPlayer.Name then 
+    pcall(function()
+    v.Character.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize) 
+   v.Character.HumanoidRootPart.Transparency = 0.7 
+   v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Really red")
+    v.Character.HumanoidRootPart.Material = "Neon"
+    v.Character.HumanoidRootPart.CanCollide = false
+    end)
+    end 
+   end 
+   end
+    end)
+end
+})
+
+range:Button({
+    Title = "普通范围",
+    Callback = function()
+loadstring(game:HttpGet("https://pastebin.com/raw/jiNwDbCN"))()
+end
+})
+
+range:Button({
+      Title = "中等范围",
+      Callback = function()
+loadstring(game:HttpGet("https://pastebin.com/raw/jiNwDbCN"))()
+end
+})
+
+range:Button({
+     Title = "全图范围",
+     Callback = function()
+loadstring(game:HttpGet("https://pastebin.com/raw/KKY9EpZU"))()
+end
+})
+
+range:Button({
+     Title = "终极范围",
+     Callback = function()
+loadstring(game:HttpGet("https://pastebin.com/raw/CAQ9x4A7"))()
+end
+})
+end
+})
+
+ESP:Button({
+        Title = "ESP",
+        Desc = "加载ESP菜单",
+        Locked = false,
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            local StarterGui = game:GetService("StarterGui")
+            local RunService = game:GetService("RunService")
+            local TweenService = game:GetService("TweenService")
+            local UserInputService = game:GetService("UserInputService")
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Camera = game:GetService('Workspace').CurrentCamera
+
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Humanoid
+            local HumanoidRootPart
+
+            local function SafeDebugPrint(message)
+                print("[DEBUG] " .. message)
+            end
+
+            local function InitializeHumanoid()
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                if character then
+                    Humanoid = character:FindFirstChild("Humanoid")
+                    if Humanoid then
+                        HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if not HumanoidRootPart then
+                            SafeDebugPrint("HumanoidRootPart not found for " .. LocalPlayer.Name)
+                        else
+                            SafeDebugPrint("HumanoidRootPart initialized for " .. LocalPlayer.Name)
+                        end
+                    else
+                        SafeDebugPrint("Humanoid not found for " .. LocalPlayer.Name)
+                    end
+                end
+            end
+
+            if LocalPlayer.Character then
+                InitializeHumanoid()
+            end
+
+            LocalPlayer.CharacterAdded:Connect(InitializeHumanoid)
+
+            local kenConfiguration = {
+                Main = {
+                    Combat = {
+                        AttackAura = false,
+                        AutoParry = false
+                    },
+                    Farm = {
+                        KillFarm = false,
+                        AutoUltimate = true
+                    }
+                },
+                Player = {
+                    Character = {
+                        OverwriteProperties = false,
+                        WalkSpeed = 50,
+                        JumpPower = 50
+                    }
+                }
+            }
+
+            local Functions = {}
+
+            function Functions.BestTarget(MaxDistance)
+                MaxDistance = MaxDistance or math.huge
+                local Target = nil
+                local MinKills = math.huge
+
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+                        local rootPart = v.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                            local kills = v:GetAttribute("Kills") or 0
+
+                            if distance < MaxDistance and kills < MinKills then
+                                Target = v
+                                MaxDistance = distance
+                                MinKills = kills
+                            end
+                        end
+                    end
+                end
+
+                SafeDebugPrint("Best target found: " .. (Target and Target.Name or "None"))
+                return Target
+            end
+
+            function Functions.UseAbility(Ability)
+                if not LocalPlayer.Character then
+                    return
+                end
+                local Tool = LocalPlayer.Backpack:FindFirstChild(Ability)
+                if Tool then
+                    SafeDebugPrint("Using ability: " .. Ability)
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            Tool = Tool,
+                            Goal = "Console Move",
+                            ToolName = tostring(Ability)
+                        }
+                    )
+                else
+                    SafeDebugPrint("Ability not found: " .. Ability)
+                end
+            end
+
+            function Functions.RandomAbility()
+                if not LocalPlayer.PlayerGui:FindFirstChild("Hotbar") then
+                    return nil
+                end
+                local Hotbar = LocalPlayer.PlayerGui.Hotbar.Backpack.Hotbar
+                local Abilities = {}
+
+                for _, v in pairs(Hotbar:GetChildren()) do
+                    if v.ClassName ~= "UIListLayout" and v.Visible and v.Base.ToolName.Text ~= "N/A" and not v.Base:FindFirstChild("Cooldown") then
+                        table.insert(Abilities, v)
+                    end
+                end
+
+                if #Abilities > 0 then
+                    local RandomAbility = Abilities[math.random(1, #Abilities)]
+                    return RandomAbility.Base.ToolName.Text
+                else
+                    SafeDebugPrint("No available abilities")
+                    return nil
+                end
+            end
+
+            function Functions.ActivateUltimate()
+                local UltimateBar = LocalPlayer:GetAttribute("Ultimate") or 0
+                if UltimateBar >= 100 then
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            MoveDirection = Vector3.new(0, 0, 0),
+                            Key = Enum.KeyCode.G,
+                            Goal = "KeyPress"
+                        }
+                    )
+                    SafeDebugPrint("Ultimate activated")
+                else
+                    SafeDebugPrint("Ultimate not ready: " .. UltimateBar .. "%")
+                end
+            end
+
+            function Functions.TeleportUnderPlayer(player)
+                if not player.Character then
+                    return
+                end
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetCFrame = rootPart.CFrame * CFrame.new(0, -5, 0)
+                    LocalPlayer.Character:SetPrimaryPartCFrame(targetCFrame)
+                    SafeDebugPrint("Teleported under player: " .. player.Name)
+                else
+                    SafeDebugPrint("Failed to teleport under player: " .. player.Name)
+                end
+            end
+
+
+ESP:Toggle({
+    Title = "Circle ESP", 
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false, 
+    Callback = function(state)
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                if state then
+                    local highlight = Instance.new("Highlight")
+                    highlight.Parent = player.Character
+                    highlight.Adornee = player.Character
+
+                    local billboard = Instance.new("BillboardGui")
+                    billboard.Parent = player.Character
+                    billboard.Adornee = player.Character
+                    billboard.Size = UDim2.new(0, 100, 0, 100)
+                    billboard.StudsOffset = Vector3.new(0, 3, 0)
+                    billboard.AlwaysOnTop = true
+
+                    local nameLabel = Instance.new("TextLabel")
+                    nameLabel.Parent = billboard
+                    nameLabel.Size = UDim2.new(1, 0, 1, 0)
+                    nameLabel.BackgroundTransparency = 1
+                    nameLabel.Text = player.Name
+                    nameLabel.TextColor3 = Color3.new(1, 1, 1)
+                    nameLabel.TextStrokeTransparency = 0.5
+                    nameLabel.TextScaled = true
+
+                    local circle = Instance.new("ImageLabel")
+                    circle.Parent = billboard
+                    circle.Size = UDim2.new(0, 50, 0, 50)
+                    circle.Position = UDim2.new(0.5, 0, 0.5, 0)
+                    circle.AnchorPoint = Vector2.new(0.5, 0.5) 
+                    circle.BackgroundTransparency = 1
+                    circle.Image = "rbxassetid://2200552246" 
+                else
+                    if player.Character:FindFirstChildOfClass("Highlight") then
+                        player.Character:FindFirstChildOfClass("Highlight"):Destroy()
+                    end
+                    if player.Character:FindFirstChildOfClass("BillboardGui") then
+                        player.Character:FindFirstChildOfClass("BillboardGui"):Destroy()
+                    end
+                end
+            end
+        end
+    end
+})
+    
+ESP:Button({
+     Title = "老外绘制1点击我开启",
+     Callback = function()
+    loadstring(game:HttpGet("https://paste.gg/p/anonymous/7259b0557ebf44ccabf2f7b58dc79899/files/0475cb5d744642a2b572e3a8af205588/raw"))()
+end
+})
+
+ESP:Button({
+     Title = "老外绘制2点击我开启",
+     Callback = function()
+assert(Drawing, "missing dependency: 'Drawing'");
+local Players = game:GetService("Players");
+local RunService = game:GetService("RunService");
+local localPlayer = Players.LocalPlayer;
+local camera = workspace.CurrentCamera;
+local cache = {};
+
+local BOX_OUTLINE_COLOR = Color3.new(0, 0, 0);
+local BOX_COLOR = Color3.new(1,0,0);
+local NAME_COLOR = Color3.new(1,1,1);
+local HEALTH_OUTLINE_COLOR = Color3.new(0, 0, 0);
+local HEALTH_HIGH_COLOR = Color3.new(0, 1, 0);
+local HEALTH_LOW_COLOR = Color3.new(1, 0, 0);
+local CHAR_SIZE = Vector2.new(4, 6);
+
+local function create(class, properties)
+    local drawing = Drawing.new(class);
+    for property, value in pairs(properties) do
+        drawing[property] = value;
+    end
+    return drawing;
+end
+local function floor2(v)
+    return Vector2.new(math.floor(v.X), math.floor(v.Y));
+end
+local function createEsp(player)
+    local esp = {};
+    esp.boxOutline = create("Square", {
+        Color = BOX_OUTLINE_COLOR,
+        Thickness = 3,
+        Filled = false
+    });
+    esp.box = create("Square", {
+        Color = BOX_COLOR,
+        Thickness = 1,
+        Filled = false
+    });
+    esp.name = create("Text", {
+        Color = NAME_COLOR,
+        Font = (syn and not RectDynamic) and 2 or 1,
+        Outline = true,
+        Center = true,
+        Size = 13
+    });
+    esp.healthOutline = create("Line", {
+        Thickness = 3,
+        Color = HEALTH_OUTLINE_COLOR
+    });
+    esp.health = create("Line", {
+        Thickness = 1
+    });
+    cache[player] = esp;
+end
+local function removeEsp(player)
+    local esp = cache[player];
+    if not esp then return end
+    for _, drawing in pairs(esp) do
+        drawing:Remove();
+    end
+    cache[player] = nil;
+end
+local function updateEsp()
+    for player, esp in pairs(cache) do
+        local character, team = player.Character, player.Team;
+        if character and (not team or team ~= localPlayer.Team) then
+            local cframe = character:GetPivot();
+            local screen, onScreen = camera:WorldToViewportPoint(cframe.Position);
+
+            if onScreen then
+                local frustumHeight = math.tan(math.rad(camera.FieldOfView * 0.5)) * 2 * screen.Z;
+                local size = camera.ViewportSize.Y / frustumHeight * CHAR_SIZE;
+                local position = Vector2.new(screen.X, screen.Y);
+
+                esp.boxOutline.Size = floor2(size);
+                esp.boxOutline.Position = floor2(position - size * 0.5);
+
+                esp.box.Size = esp.boxOutline.Size;
+                esp.box.Position = esp.boxOutline.Position;
+
+                esp.name.Text = string.lower(player.Name);
+                esp.name.Position = floor2(position - Vector2.yAxis * (size.Y * 0.5 + esp.name.TextBounds.Y + 2));
+
+                local humanoid = character:FindFirstChildOfClass("Humanoid");
+                local health = (humanoid and humanoid.Health or 100) / 100;
+
+                esp.healthOutline.From = floor2(position - size * 0.5) - Vector2.xAxis * 5;
+                esp.healthOutline.To = floor2(position - size * Vector2.new(0.5, -0.5)) - Vector2.xAxis * 5;
+
+                esp.health.From = esp.healthOutline.To;
+                esp.health.To = floor2(esp.healthOutline.To:Lerp(esp.healthOutline.From, health));
+                esp.health.Color = HEALTH_LOW_COLOR:Lerp(HEALTH_HIGH_COLOR, health);
+
+                esp.healthOutline.From = esp.healthOutline.From - Vector2.yAxis;
+                esp.healthOutline.To = esp.healthOutline.To + Vector2.yAxis;
+            end
+            for _, drawing in pairs(esp) do
+                drawing.Visible = onScreen;
+            end
+        else
+            for _, drawing in pairs(esp) do
+                drawing.Visible = false;
+            end
+        end
+    end
+end
+Players.PlayerAdded:Connect(createEsp);
+Players.PlayerRemoving:Connect(removeEsp);
+RunService.RenderStepped:Connect(updateEsp);
+
+for idx, player in ipairs(Players:GetPlayers()) do
+    if idx ~= 1 then createEsp(player); end
+end
+end
+})
+
+getgenv().ESPEnabled = false 
+getgenv().ShowBox = false 
+getgenv().ShowHealth = false 
+getgenv().ShowName = false 
+getgenv().ShowDistance = false 
+getgenv().ShowTracer = false 
+getgenv().TeamCheck = false 
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+local function createESP(player)
+    local box = Drawing.new("Square")
+    box.Visible = false
+    box.Color = Color3.new(1, 1, 1)
+    box.Thickness = 1
+    box.Filled = false
+
+    local healthText = Drawing.new("Text")
+    healthText.Visible = false
+    healthText.Color = Color3.new(0, 1, 0)
+    healthText.Size = 16
+
+    local nameText = Drawing.new("Text")
+    nameText.Visible = false
+    nameText.Color = Color3.new(1, 1, 1)
+    nameText.Size = 16
+
+    local distanceText = Drawing.new("Text")
+    distanceText.Visible = false
+    distanceText.Color = Color3.new(1, 1, 0)
+    distanceText.Size = 16
+
+    local tracer = Drawing.new("Line")
+    tracer.Visible = false
+    tracer.Color = Color3.new(1, 0, 0)
+    tracer.Thickness = 1
+
+    RunService.RenderStepped:Connect(function()
+        if not getgenv().ESPEnabled or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") or not player.Character:FindFirstChild("Humanoid") or player == LocalPlayer then
+            box.Visible = false
+            healthText.Visible = false
+            nameText.Visible = false
+            distanceText.Visible = false
+            tracer.Visible = false
+            return
+        end
+
+        if getgenv().TeamCheck and player.Team == LocalPlayer.Team then
+            box.Visible = false
+            healthText.Visible = false
+            nameText.Visible = false
+            distanceText.Visible = false
+            tracer.Visible = false
+            return
+        end
+
+        local character = player.Character
+        local rootPart = character:FindFirstChild("HumanoidRootPart")
+        local humanoid = character:FindFirstChild("Humanoid")
+
+        if rootPart and humanoid and humanoid.Health > 0 then
+            local rootPos, onScreen = Camera:WorldToViewportPoint(rootPart.Position)
+            local headPos, _ = Camera:WorldToViewportPoint(rootPart.Position + Vector3.new(0, 3, 0))
+            local legPos, _ = Camera:WorldToViewportPoint(rootPart.Position - Vector3.new(0, 3, 0))
+
+            if getgenv().ShowBox and onScreen then
+                box.Size = Vector2.new(1000 / rootPos.Z, headPos.Y - legPos.Y)
+                box.Position = Vector2.new(rootPos.X - box.Size.X / 2, rootPos.Y - box.Size.Y / 2)
+                box.Visible = true
+            else
+                box.Visible = false
+            end
+
+            if getgenv().ShowHealth and onScreen then
+                healthText.Position = Vector2.new(rootPos.X, rootPos.Y - box.Size.Y / 2 - 20)
+                healthText.Text = "血量: " .. math.floor(humanoid.Health)
+                healthText.Visible = true
+            else
+                healthText.Visible = false
+            end
+
+            if getgenv().ShowName and onScreen then
+                nameText.Position = Vector2.new(rootPos.X, rootPos.Y - box.Size.Y / 2 - 40)
+                nameText.Text = "名字: " .. player.Name
+                nameText.Visible = true
+            else
+                nameText.Visible = false
+            end
+
+            if getgenv().ShowDistance and onScreen then
+                local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                distanceText.Position = Vector2.new(rootPos.X, rootPos.Y + box.Size.Y / 2 + 20)
+                distanceText.Text = "距离: " .. math.floor(distance) .. " ㎝"
+                distanceText.Visible = true
+            else
+                distanceText.Visible = false
+            end
+
+            if getgenv().ShowTracer then
+                tracer.From = getgenv().TracerStart == "Bottom" and Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y) or Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                tracer.To = Vector2.new(rootPos.X, rootPos.Y)
+                tracer.Visible = onScreen
+            else
+                tracer.Visible = false
+            end
+        else
+            box.Visible = false
+            healthText.Visible = false
+            nameText.Visible = false
+            distanceText.Visible = false
+            tracer.Visible = false
+        end
+    end)
+end
+
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        createESP(player)
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    if player ~= LocalPlayer then
+        createESP(player)
+    end
+end)
+
+ESP:Toggle({
+    Title = "确定开启esp", 
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false, 
+    Callback = function(Value)
+    getgenv().ESPEnabled = Value 
+end
+})
+
+ESP:Toggle({
+    Title = "身体方框",
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false, 
+    Callback = function(Value)
+    getgenv().ShowBox = Value 
+end
+})
+
+ESP:Toggle({
+    Title = "血量", 
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false, 
+    Callback = function(Value)
+    getgenv().ShowHealth = Value 
+end
+})
+
+ESP:Toggle({
+   Title = "用户名", 
+   Icon = "bird",
+   Type = "Checkbox",
+   Default = false, 
+   Callback = function(Value)
+    getgenv().ShowName = Value
+end
+})
+
+ESP:Toggle({
+    Title = "距离",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(Value)
+    getgenv().ShowDistance = Value 
+end
+})
+
+ESP:Toggle({
+    Title = "天线",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(Value)
+  getgenv().ShowTracer = Value 
+end
+})
+
+ESP:Toggle({
+    Title = "团队判断",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(Value)
+    getgenv().TeamCheck = Value 
+end
+})
+
+ESP:Paragraph({
+    Title = "区分队伍后身体和天线只绘制敌人其他正常",
+})
+
+ESP:Toggle({
+    Title = "开启初始化Esp（必开）",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(state)
+ESP.Enabled = state;
+end
+})
+
+ESP:Toggle({
+    Title = "开启初始化2ESP（必开）", 
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false, 
+    Callback = function(state)
+getgenv().enabled = state 
+getgenv().filluseteamcolor = true 
+getgenv().outlineuseteamcolor = true 
+getgenv().fillcolor = Color3.new(0, 0, 0) 
+getgenv().outlinecolor = Color3.new(1, 1, 1) 
+getgenv().filltrans = 0.5 
+getgenv().outlinetrans = 0.5 
+local holder = game.CoreGui:FindFirstChild("ESPHolder") or Instance.new("Folder")
+if enabled == false then
+    holder:Destroy()
+end
+
+if holder.Name == "Folder" then
+    holder.Name = "ESPHolder"
+    holder.Parent = game.CoreGui
+end
+
+if uselocalplayer == false and holder:FindFirstChild(game.Players.LocalPlayer.Name) then
+    holder:FindFirstChild(game.Players.LocalPlayer.Name):Destroy()
+end
+
+if getgenv().enabled == true then 
+    getgenv().enabled = false
+    getgenv().enabled = true
+end
+game:GetService("RunService").Heartbeat:Connect(function()
+    if getgenv().enabled then
+        task.wait()
+        for _,v in pairs(game.Players:GetChildren()) do
+            local chr = v.Character
+            if chr ~= nil then
+                local esp = holder:FindFirstChild(v.Name) or Instance.new("Highlight")
+                esp.Name = v.Name
+                if uselocalplayer == false and esp.Name == game.Players.LocalPlayer.Name then
+                    else
+                esp.Parent = holder
+                if filluseteamcolor then
+                    esp.FillColor = v.TeamColor.Color
+                else
+                    esp.FillColor = fillcolor 
+                end
+                if outlineuseteamcolor then
+                    esp.OutlineColor = v.TeamColor.Color
+                else
+                    esp.OutlineColor = outlinecolor    
+                end
+                esp.FillTransparency = filltrans
+                esp.OutlineTransparency = outlinetrans
+                esp.Adornee = chr
+                esp.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            end
+        end
+    end
+end
+end)
+end
+})
+
+ESP:Toggle({
+     Title = "开启身体esp",
+     Icon = "bird",
+     Type = "Checkbox", 
+     Default = false, 
+     Callback = function(state)
+ESP.ShowBox = state;
+end
+})
+
+ESP:Toggle({
+    Title = "开启名字esp",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(state)
+ESP.ShowName = state;
+end
+})
+
+ESP:Toggle({
+    Title = "开启血量esp",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(state)
+ESP.ShowHealth = state;
+end
+})
+
+ESP:Toggle({
+    Title = "开启天线esp",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(state)
+ESP.ShowTracer = state;
+end
+})
+
+ESP:Toggle({
+    Title = "开启距离esp",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(state)
+ESP.ShowDistance = state
+end
+})
+
+ESP:Toggle({
+    Title = "名字显示",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(state)
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer then
+            if state then
+                local billboard = Instance.new("BillboardGui")
+                billboard.Parent = player.Character
+                billboard.Adornee = player.Character
+                billboard.Size = UDim2.new(0, 100, 0, 100)
+                billboard.StudsOffset = Vector3.new(0, 3, 0)
+                billboard.AlwaysOnTop = true
+
+                local nameLabel = Instance.new("TextLabel")
+                nameLabel.Parent = billboard
+                nameLabel.Size = UDim2.new(1, 0, 1, 0)
+                nameLabel.BackgroundTransparency = 1
+                nameLabel.Text = player.Name
+                nameLabel.TextColor3 = Color3.new(255, 0, 0)
+                nameLabel.TextStrokeTransparency = 0.5
+                nameLabel.TextScaled = true
+            else
+                if player.Character:FindFirstChildOfClass("BillboardGui") then
+                    player.Character:FindFirstChildOfClass("BillboardGui"):Destroy()
+                end
+            end
+        end
+    end
+end
+})
+ESP:Toggle({
+     Title = "健康显示",
+     Icon = "bird",
+     Type = "Checkbox", 
+     Default = false, 
+     Callback = function(state)
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer then
+            if state then
+                local billboard = Instance.new("BillboardGui")
+                billboard.Parent = player.Character
+                billboard.Adornee = player.Character
+                billboard.Size = UDim2.new(0, 100, 0, 100)
+                billboard.StudsOffset = Vector3.new(0, 3, 0)
+                billboard.AlwaysOnTop = true
+
+                local healthLabel = Instance.new("TextLabel")
+                healthLabel.Parent = billboard
+                healthLabel.Size = UDim2.new(1, 0, 1, 0)
+                healthLabel.BackgroundTransparency = 1
+                healthLabel.Text = player.Name .. ":" .. player.Character.Humanoid.Health
+                healthLabel.TextColor3 = Color3.new(255, 0, 0)
+                healthLabel.TextStrokeTransparency = 0.5
+                healthLabel.TextScaled = true
+            else
+                if player.Character:FindFirstChildOfClass("BillboardGui") then
+                    player.Character:FindFirstChildOfClass("BillboardGui"):Destroy()
+                end
+            end
+        end
+    end
+end
+})
+ESP:Toggle({
+    Title = "高光显示",
+    Icon = "bird",
+    Type = "Checkbox",  
+    Default = false, 
+    Callback = function(state)
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer then
+            if state then
+                local highlight = Instance.new("Highlight")
+                highlight.Parent = player.Character
+                highlight.Adornee = player.Character
+            else
+                if player.Character:FindFirstChildOfClass("Highlight") then
+                    player.Character:FindFirstChildOfClass("Highlight"):Destroy()
+                end
+            end
+        end
+    end
+end
+})
+ESP:Toggle({
+    Title = "距离显示（不可关闭）",
+    Icon = "bird",
+    Type = "Checkbox", 
+    Default = false, 
+    Callback = function(state)
+    local heartbeatConnection
+
+    local function updateDistanceLabels()
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    local distance = (humanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                    local billboard = humanoidRootPart:FindFirstChild("DistanceBillboard")
+                    local distanceLabel = billboard and billboard:FindFirstChild("DistanceLabel")
+
+                    if not billboard then
+                        billboard = Instance.new("BillboardGui")
+                        billboard.Name = "DistanceBillboard"
+                        billboard.Parent = humanoidRootPart
+                        billboard.Adornee = humanoidRootPart
+                        billboard.Size = UDim2.new(0, 100, 0, 100)
+                        billboard.StudsOffset = Vector3.new(0, 3, 0)
+                        billboard.AlwaysOnTop = true
+                    end
+
+                    if distanceLabel then
+                        distanceLabel:Destroy()
+                    end
+
+                    distanceLabel = Instance.new("TextLabel")
+                    distanceLabel.Name = "DistanceLabel"
+                    distanceLabel.Parent = billboard
+                    distanceLabel.Size = UDim2.new(1, 0, 1, 0)
+                    distanceLabel.BackgroundTransparency = 1
+                    distanceLabel.TextColor3 = Color3.new(255, 0, 0)
+                    distanceLabel.TextStrokeTransparency = 0.5
+                    distanceLabel.TextScaled = true
+                    distanceLabel.TextXAlignment = Enum.TextXAlignment.Center
+                    distanceLabel.TextYAlignment = Enum.TextYAlignment.Center
+                    distanceLabel.Font = Enum.Font.ArialBold
+                    distanceLabel.FontSize = Enum.FontSize.Size24
+                    distanceLabel.Text = player.Name .. ":" .. ("%.2f"):format(distance)
+                end
+            end
+        end
+    end
+
+    if state then
+        heartbeatConnection = game:GetService("RunService").Heartbeat:Connect(function()
+            updateDistanceLabels()
+        end)
+    else
+        if heartbeatConnection then
+            heartbeatConnection:Disconnect()
+        end
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    local billboard = humanoidRootPart:FindFirstChild("DistanceBillboard")
+                    if billboard then
+                        billboard:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end
+})
+end
+})
+
+local function updateBlur(shouldEnable)
+    local camera = workspace.CurrentCamera
+    local blurAmount = 10
+    local blurAmplifier = 5
+    local lastVector = camera.CFrame.LookVector
+    local motionBlur = camera:FindFirstChildOfClass("BlurEffect")
+
+    if shouldEnable then
+        if not motionBlur then
+            motionBlur = Instance.new("BlurEffect", camera)
+        end
+        workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+            camera = workspace.CurrentCamera
+            if motionBlur and motionBlur.Parent then
+                motionBlur.Parent = camera
+            else
+                motionBlur = Instance.new("BlurEffect", camera)
+            end
+        end)
+        game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
+            local magnitude = (camera.CFrame.LookVector - lastVector).Magnitude
+            motionBlur.Size = math.abs(magnitude) * blurAmount * blurAmplifier / 2
+            lastVector = camera.CFrame.LookVector
+        end)
+    else
+        if motionBlur then
+            motionBlur:Destroy()
+        end
+    end
+end
+
+GIY:Button({
+        Title = "画质光影",
+        Desc = "加载画质光影菜单",
+        Locked = false,
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            local StarterGui = game:GetService("StarterGui")
+            local RunService = game:GetService("RunService")
+            local TweenService = game:GetService("TweenService")
+            local UserInputService = game:GetService("UserInputService")
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Camera = game:GetService('Workspace').CurrentCamera
+
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Humanoid
+            local HumanoidRootPart
+
+            local function SafeDebugPrint(message)
+                print("[DEBUG] " .. message)
+            end
+
+            local function InitializeHumanoid()
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                if character then
+                    Humanoid = character:FindFirstChild("Humanoid")
+                    if Humanoid then
+                        HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if not HumanoidRootPart then
+                            SafeDebugPrint("HumanoidRootPart not found for " .. LocalPlayer.Name)
+                        else
+                            SafeDebugPrint("HumanoidRootPart initialized for " .. LocalPlayer.Name)
+                        end
+                    else
+                        SafeDebugPrint("Humanoid not found for " .. LocalPlayer.Name)
+                    end
+                end
+            end
+
+            if LocalPlayer.Character then
+                InitializeHumanoid()
+            end
+
+            LocalPlayer.CharacterAdded:Connect(InitializeHumanoid)
+
+            local kenConfiguration = {
+                Main = {
+                    Combat = {
+                        AttackAura = false,
+                        AutoParry = false
+                    },
+                    Farm = {
+                        KillFarm = false,
+                        AutoUltimate = true
+                    }
+                },
+                Player = {
+                    Character = {
+                        OverwriteProperties = false,
+                        WalkSpeed = 50,
+                        JumpPower = 50
+                    }
+                }
+            }
+
+            local Functions = {}
+
+            function Functions.BestTarget(MaxDistance)
+                MaxDistance = MaxDistance or math.huge
+                local Target = nil
+                local MinKills = math.huge
+
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+                        local rootPart = v.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                            local kills = v:GetAttribute("Kills") or 0
+
+                            if distance < MaxDistance and kills < MinKills then
+                                Target = v
+                                MaxDistance = distance
+                                MinKills = kills
+                            end
+                        end
+                    end
+                end
+
+                SafeDebugPrint("Best target found: " .. (Target and Target.Name or "None"))
+                return Target
+            end
+
+            function Functions.UseAbility(Ability)
+                if not LocalPlayer.Character then
+                    return
+                end
+                local Tool = LocalPlayer.Backpack:FindFirstChild(Ability)
+                if Tool then
+                    SafeDebugPrint("Using ability: " .. Ability)
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            Tool = Tool,
+                            Goal = "Console Move",
+                            ToolName = tostring(Ability)
+                        }
+                    )
+                else
+                    SafeDebugPrint("Ability not found: " .. Ability)
+                end
+            end
+
+            function Functions.RandomAbility()
+                if not LocalPlayer.PlayerGui:FindFirstChild("Hotbar") then
+                    return nil
+                end
+                local Hotbar = LocalPlayer.PlayerGui.Hotbar.Backpack.Hotbar
+                local Abilities = {}
+
+                for _, v in pairs(Hotbar:GetChildren()) do
+                    if v.ClassName ~= "UIListLayout" and v.Visible and v.Base.ToolName.Text ~= "N/A" and not v.Base:FindFirstChild("Cooldown") then
+                        table.insert(Abilities, v)
+                    end
+                end
+
+                if #Abilities > 0 then
+                    local RandomAbility = Abilities[math.random(1, #Abilities)]
+                    return RandomAbility.Base.ToolName.Text
+                else
+                    SafeDebugPrint("No available abilities")
+                    return nil
+                end
+            end
+
+            function Functions.ActivateUltimate()
+                local UltimateBar = LocalPlayer:GetAttribute("Ultimate") or 0
+                if UltimateBar >= 100 then
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            MoveDirection = Vector3.new(0, 0, 0),
+                            Key = Enum.KeyCode.G,
+                            Goal = "KeyPress"
+                        }
+                    )
+                    SafeDebugPrint("Ultimate activated")
+                else
+                    SafeDebugPrint("Ultimate not ready: " .. UltimateBar .. "%")
+                end
+            end
+
+            function Functions.TeleportUnderPlayer(player)
+                if not player.Character then
+                    return
+                end
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetCFrame = rootPart.CFrame * CFrame.new(0, -5, 0)
+                    LocalPlayer.Character:SetPrimaryPartCFrame(targetCFrame)
+                    SafeDebugPrint("Teleported under player: " .. player.Name)
+                else
+                    SafeDebugPrint("Failed to teleport under player: " .. player.Name)
+                end
+            end
+
+
+
+GIY:Button({
+     Title = "动态模糊", 
+     Callback = function(AY)
+    updateBlur(AY)
+end
+})
+GIY:Button({
+   Title = "轻微动态模糊", 
+   Callback = function()
+    local player = game.Players.LocalPlayer local playerGui = player:WaitForChild("PlayerGui") local blurEffect = Instance.new("BlurEffect") blurEffect.Size = 7 blurEffect.Parent = playerGui wait(5) blurEffect:Destroy()
+end
+})
+GIY:Button({
+   Title = "远处模糊", 
+   Callback = function()
+     local PostProcessing = game:GetService("PostProcessingService")
+     local DepthOfField = Instance.new("DepthOfFieldEffect")
+     DepthOfField.FarIntensity = 0.5
+     DepthOfField.FocusDistance = Vector3.new(10, 0, 0)
+
+     local function enablePostProcessing()
+         local player = game.Players.LocalPlayer
+         local character = player.Character or player.CharacterAdded:Wait()
+         local humanoid = character:WaitForChild("Humanoid")
+         humanoid.Died:Connect(function()
+             PostProcessing:ClearAll()
+         end)
+
+         local cam = game.Workspace.CurrentCamera
+         cam:GetPropertyChangedSignal("CameraSubject"):Connect(function()
+             local rootPart = humanoid.RootPart
+             if rootPart then
+                 local depth = (cam.CameraSubject.Position - rootPart.Position).Magnitude
+                 DepthOfField.FocusDistance = Vector3.new(depth, 0, 0)
+                 cam.DepthOfFieldEffect = DepthOfField
+             end
+         end)
+     end
+
+     enablePostProcessing()
+end
+})
+local blurRadius = 5
+local sigma = 5.0
+
+local function applyGaussianBlur(imageLabel)
+    local screenWidth = game.Workspace.CurrentCamera.ViewportSize.X
+    local screenHeight = game.Workspace.CurrentCamera.ViewportSize.Y
+    local tempImageLabel = imageLabel.TempImageLabel
+
+    if not tempImageLabel then
+        tempImageLabel = Instance.new("ImageLabel")
+        tempImageLabel.BackgroundTransparency = 1
+        tempImageLabel.Parent = imageLabel.Parent
+        imageLabel.TempImageLabel = tempImageLabel
+    end
+
+    tempImageLabel.Size = UDim2.new(1, 0, 1, 0)
+    tempImageLabel.Image = imageLabel.Image
+
+    local pixelSizeX = 1.0 / screenWidth
+    local pixelSizeY = 1.0 / screenHeight
+
+    local function renderBlur()
+        local blurredImage = Instance.new("ImageLabel")
+        blurredImage.BackgroundTransparency = 1
+        blurredImage.Size = UDim2.new(1, 0, 1, 0)
+        blurredImage.Image = imageLabel.Image
+        blurredImage.ImageColor3 = Color3.new(1, 1, 1)
+        blurredImage.ImageTransparency = 0.5
+        blurredImage.Parent = game.Workspace
+
+        local filter = Instance.new("ImageFilter")
+        filter.FilterType = Enum.ImageFilterType.GaussianBlur
+        filter.Radius = blurRadius
+        filter.StandardDeviation = sigma
+        blurredImage.ImageFilter = filter
+    end
+
+    game:GetService("RunService").RenderStepped:Connect(function()
+        renderBlur()
+    end)
+end
+
+GIY:Button({
+      Title = "高斯模糊", 
+      Callback = function(GP)
+    applyGaussianBlur(GP)
+end
+})
+
+GIY:Button({
+    Title = "光影", 
+    Callback = function()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/MZEEN2424/Graphics/main/Graphics.xml"))()
+end
+})
+GIY:Button({
+   Title = "RTX高仿", 
+   Callback = function()
+  loadstring(game:HttpGet('https://pastebin.com/raw/Bkf0BJb3'))()
+end
+})
+GIY:Button({
+     Title = "超高画质", 
+     Callback = function()
+  loadstring(game:HttpGet("https://pastebin.com/raw/jHBfJYmS"))()
+end
+})
+GIY:Button({
+    Title = "光影v4", 
+    Callback = function()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/MZEEN2424/Graphics/main/Graphics.xml"))()
+end
+})
+GIY:Button({
+    Title = "光影浅", 
+    Callback = function()
+  loadstring(game:HttpGet("https://pastebin.com/raw/jHBfJYmS"))()
+end
+})
+GIY:Button({
+   Title = "光影深", 
+   Callback = function()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/MZEEN2424/Graphics/main/Graphics.xml"))()
+end
+})
+end
+})
+
+FE:Button({
+        Title = "FE",
+        Desc = "加载FE菜单",
+        Locked = false,
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            local StarterGui = game:GetService("StarterGui")
+            local RunService = game:GetService("RunService")
+            local TweenService = game:GetService("TweenService")
+            local UserInputService = game:GetService("UserInputService")
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Camera = game:GetService('Workspace').CurrentCamera
+
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Humanoid
+            local HumanoidRootPart
+
+            local function SafeDebugPrint(message)
+                print("[DEBUG] " .. message)
+            end
+
+            local function InitializeHumanoid()
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                if character then
+                    Humanoid = character:FindFirstChild("Humanoid")
+                    if Humanoid then
+                        HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if not HumanoidRootPart then
+                            SafeDebugPrint("HumanoidRootPart not found for " .. LocalPlayer.Name)
+                        else
+                            SafeDebugPrint("HumanoidRootPart initialized for " .. LocalPlayer.Name)
+                        end
+                    else
+                        SafeDebugPrint("Humanoid not found for " .. LocalPlayer.Name)
+                    end
+                end
+            end
+
+            if LocalPlayer.Character then
+                InitializeHumanoid()
+            end
+
+            LocalPlayer.CharacterAdded:Connect(InitializeHumanoid)
+
+            local kenConfiguration = {
+                Main = {
+                    Combat = {
+                        AttackAura = false,
+                        AutoParry = false
+                    },
+                    Farm = {
+                        KillFarm = false,
+                        AutoUltimate = true
+                    }
+                },
+                Player = {
+                    Character = {
+                        OverwriteProperties = false,
+                        WalkSpeed = 50,
+                        JumpPower = 50
+                    }
+                }
+            }
+
+            local Functions = {}
+
+            function Functions.BestTarget(MaxDistance)
+                MaxDistance = MaxDistance or math.huge
+                local Target = nil
+                local MinKills = math.huge
+
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+                        local rootPart = v.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                            local kills = v:GetAttribute("Kills") or 0
+
+                            if distance < MaxDistance and kills < MinKills then
+                                Target = v
+                                MaxDistance = distance
+                                MinKills = kills
+                            end
+                        end
+                    end
+                end
+
+                SafeDebugPrint("Best target found: " .. (Target and Target.Name or "None"))
+                return Target
+            end
+
+            function Functions.UseAbility(Ability)
+                if not LocalPlayer.Character then
+                    return
+                end
+                local Tool = LocalPlayer.Backpack:FindFirstChild(Ability)
+                if Tool then
+                    SafeDebugPrint("Using ability: " .. Ability)
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            Tool = Tool,
+                            Goal = "Console Move",
+                            ToolName = tostring(Ability)
+                        }
+                    )
+                else
+                    SafeDebugPrint("Ability not found: " .. Ability)
+                end
+            end
+
+            function Functions.RandomAbility()
+                if not LocalPlayer.PlayerGui:FindFirstChild("Hotbar") then
+                    return nil
+                end
+                local Hotbar = LocalPlayer.PlayerGui.Hotbar.Backpack.Hotbar
+                local Abilities = {}
+
+                for _, v in pairs(Hotbar:GetChildren()) do
+                    if v.ClassName ~= "UIListLayout" and v.Visible and v.Base.ToolName.Text ~= "N/A" and not v.Base:FindFirstChild("Cooldown") then
+                        table.insert(Abilities, v)
+                    end
+                end
+
+                if #Abilities > 0 then
+                    local RandomAbility = Abilities[math.random(1, #Abilities)]
+                    return RandomAbility.Base.ToolName.Text
+                else
+                    SafeDebugPrint("No available abilities")
+                    return nil
+                end
+            end
+
+            function Functions.ActivateUltimate()
+                local UltimateBar = LocalPlayer:GetAttribute("Ultimate") or 0
+                if UltimateBar >= 100 then
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            MoveDirection = Vector3.new(0, 0, 0),
+                            Key = Enum.KeyCode.G,
+                            Goal = "KeyPress"
+                        }
+                    )
+                    SafeDebugPrint("Ultimate activated")
+                else
+                    SafeDebugPrint("Ultimate not ready: " .. UltimateBar .. "%")
+                end
+            end
+
+            function Functions.TeleportUnderPlayer(player)
+                if not player.Character then
+                    return
+                end
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetCFrame = rootPart.CFrame * CFrame.new(0, -5, 0)
+                    LocalPlayer.Character:SetPrimaryPartCFrame(targetCFrame)
+                    SafeDebugPrint("Teleported under player: " .. player.Name)
+                else
+                    SafeDebugPrint("Failed to teleport under player: " .. player.Name)
+                end
+            end
+
+
+
+FE:Button({
+      Title = "FE C00lgui", 
+    Callback = function()
+loadstring(game:GetObjects("rbxassetid://8127297852")[1].Source)()
+end
+})
+FE:Button({
+      Title = "FE 1x1x1x1", 
+    Callback = function()
+loadstring(game:HttpGet(('https://pastebin.com/raw/JipYNCht'),true))()
+end
+})
+FE:Button({
+      Title = "FE大长腿", 
+    Callback = function()
+    loadstring(game:HttpGet('https://gist.githubusercontent.com/1BlueCat/7291747e9f093555573e027621f08d6e/raw/23b48f2463942befe19d81aa8a06e3222996242c/FE%2520Da%2520Feets'))()
+end
+})
+FE:Button({
+      Title = "FE用头", 
+    Callback = function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/BK4Q0DfU"))()
+end
+})
+FE:Button({
+      Title = "复仇者", 
+    Callback = function()
+    loadstring(game:HttpGet(('https://pastefy.ga/iGyVaTvs/raw'),true))()
+end
+})
+FE:Button({
+      Title = "鼠标", 
+    Callback = function()
+    loadstring(game:HttpGet(('https://pastefy.ga/V75mqzaz/raw'),true))()
+end
+})
+FE:Button({
+      Title = "变怪物", 
+    Callback = function()
+    loadstring(game:HttpGetAsync("https://pastebin.com/raw/jfryBKds"))()
+end
+})
+FE:Button({
+      Title = "香蕉枪", 
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/MrNeRD0/Doors-Hack/main/BananaGunByNerd.lua"))()
+end
+})
+FE:Button({
+      Title = "超长🐔巴", 
+    Callback = function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/ESWSFND7", true))()
+end
+})
+FE:Button({
+      Title = "操人", 
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/XiaoYunCN/UWU/main/AHAJAJAKAK/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A/A.LUA", true))()
+end
+})
+FE:Button({
+      Title = "FE动画中心", 
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/GamingScripter/Animation-Hub/main/Animation%20Gui", true))()
+end
+})
+FE:Button({
+      Title = "FE变玩家", 
+    Callback = function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/XR4sGcgJ"))()
+end
+})
+FE:Button({
+      Title = "FE猫娘R63", 
+    Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Tescalus/Pendulum-Hubs-Source/main/Pendulum%20Hub%20V5.lua"))()
+end
+})
+FE:Button({
+      Title = "FE", 
+    Callback = function()
+    loadstring(game:HttpGet('https://pastefy.ga/a7RTi4un/raw'))()
+end
+})
+end
+})
+
+music:Button({
+        Title = "音乐",
+        Desc = "加载音乐菜单",
+        Locked = false,
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            local StarterGui = game:GetService("StarterGui")
+            local RunService = game:GetService("RunService")
+            local TweenService = game:GetService("TweenService")
+            local UserInputService = game:GetService("UserInputService")
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Camera = game:GetService('Workspace').CurrentCamera
+
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Humanoid
+            local HumanoidRootPart
+
+            local function SafeDebugPrint(message)
+                print("[DEBUG] " .. message)
+            end
+
+            local function InitializeHumanoid()
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                if character then
+                    Humanoid = character:FindFirstChild("Humanoid")
+                    if Humanoid then
+                        HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if not HumanoidRootPart then
+                            SafeDebugPrint("HumanoidRootPart not found for " .. LocalPlayer.Name)
+                        else
+                            SafeDebugPrint("HumanoidRootPart initialized for " .. LocalPlayer.Name)
+                        end
+                    else
+                        SafeDebugPrint("Humanoid not found for " .. LocalPlayer.Name)
+                    end
+                end
+            end
+
+            if LocalPlayer.Character then
+                InitializeHumanoid()
+            end
+
+            LocalPlayer.CharacterAdded:Connect(InitializeHumanoid)
+
+            local kenConfiguration = {
+                Main = {
+                    Combat = {
+                        AttackAura = false,
+                        AutoParry = false
+                    },
+                    Farm = {
+                        KillFarm = false,
+                        AutoUltimate = true
+                    }
+                },
+                Player = {
+                    Character = {
+                        OverwriteProperties = false,
+                        WalkSpeed = 50,
+                        JumpPower = 50
+                    }
+                }
+            }
+
+            local Functions = {}
+
+            function Functions.BestTarget(MaxDistance)
+                MaxDistance = MaxDistance or math.huge
+                local Target = nil
+                local MinKills = math.huge
+
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+                        local rootPart = v.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                            local kills = v:GetAttribute("Kills") or 0
+
+                            if distance < MaxDistance and kills < MinKills then
+                                Target = v
+                                MaxDistance = distance
+                                MinKills = kills
+                            end
+                        end
+                    end
+                end
+
+                SafeDebugPrint("Best target found: " .. (Target and Target.Name or "None"))
+                return Target
+            end
+
+            function Functions.UseAbility(Ability)
+                if not LocalPlayer.Character then
+                    return
+                end
+                local Tool = LocalPlayer.Backpack:FindFirstChild(Ability)
+                if Tool then
+                    SafeDebugPrint("Using ability: " .. Ability)
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            Tool = Tool,
+                            Goal = "Console Move",
+                            ToolName = tostring(Ability)
+                        }
+                    )
+                else
+                    SafeDebugPrint("Ability not found: " .. Ability)
+                end
+            end
+
+            function Functions.RandomAbility()
+                if not LocalPlayer.PlayerGui:FindFirstChild("Hotbar") then
+                    return nil
+                end
+                local Hotbar = LocalPlayer.PlayerGui.Hotbar.Backpack.Hotbar
+                local Abilities = {}
+
+                for _, v in pairs(Hotbar:GetChildren()) do
+                    if v.ClassName ~= "UIListLayout" and v.Visible and v.Base.ToolName.Text ~= "N/A" and not v.Base:FindFirstChild("Cooldown") then
+                        table.insert(Abilities, v)
+                    end
+                end
+
+                if #Abilities > 0 then
+                    local RandomAbility = Abilities[math.random(1, #Abilities)]
+                    return RandomAbility.Base.ToolName.Text
+                else
+                    SafeDebugPrint("No available abilities")
+                    return nil
+                end
+            end
+
+            function Functions.ActivateUltimate()
+                local UltimateBar = LocalPlayer:GetAttribute("Ultimate") or 0
+                if UltimateBar >= 100 then
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            MoveDirection = Vector3.new(0, 0, 0),
+                            Key = Enum.KeyCode.G,
+                            Goal = "KeyPress"
+                        }
+                    )
+                    SafeDebugPrint("Ultimate activated")
+                else
+                    SafeDebugPrint("Ultimate not ready: " .. UltimateBar .. "%")
+                end
+            end
+
+            function Functions.TeleportUnderPlayer(player)
+                if not player.Character then
+                    return
+                end
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetCFrame = rootPart.CFrame * CFrame.new(0, -5, 0)
+                    LocalPlayer.Character:SetPrimaryPartCFrame(targetCFrame)
+                    SafeDebugPrint("Teleported under player: " .. player.Name)
+                else
+                    SafeDebugPrint("Failed to teleport under player: " .. player.Name)
+                end
+            end
+
+
+
+music:Button({
+      Title = "彩虹瀑布", 
+    Callback = function()
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://1837879082"
+    sound.Parent = game.Workspace
+    sound:Play()
+    end
+})
+music:Button({
+      Title = "防空警报", 
+    Callback = function()
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://792323017"
+    sound.Parent = game.Workspace
+    sound:Play()
+    end
+})
+music:Button({
+      Title = "义勇军进行曲", 
+    Callback = function()
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://1845918434"
+    sound.Parent = game.Workspace
+    sound:Play()
+    end
+})
+music:Button({
+      Title = "火车音", 
+    Callback = function()
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://3900067524"
+    sound.Parent = game.Workspace
+    sound:Play()
+    end
+})
+music:Button({
+      Title = "Gentry Road", 
+    Callback = function()
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://5567523008"
+    sound.Parent = game.Workspace
+    sound:Play()
+    end
+})
+music:Button({
+      Title = "植物大战僵尸", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://158260415" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "早安越南", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://8295016126" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+      music:Button({
+      Title = "愤怒芒西 Evade?", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://5029269312" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+      music:Button({
+      Title = "梅西", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://7354576319" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+      music:Button({
+      Title = "永春拳", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://1845973140" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "带劲的音乐", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://18841891575" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+      music:Button({
+      Title = "韩国国歌", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://1837478300" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+      music:Button({
+      Title = "哥哥你女朋友不会吃醋吧?", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://8715811379" 
+     sound.Parent = game.Workspace 
+     sound:Play()  
+     end
+}) 
+      music:Button({
+      Title = "蜘蛛侠出场声音", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://9108472930" 
+     sound.Parent = game.Workspace 
+     sound:Play()
+     end
+}) 
+      music:Button({
+      Title = "消防车", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://317455930" 
+     sound.Parent = game.Workspace 
+     sound:Play()
+     end
+}) 
+      music:Button({
+      Title = "万圣节1🎃", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://1837467198" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "好听的", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://1844125168" 
+     sound.Parent = game.Workspace 
+     sound:Play()
+     end
+}) 
+ music:Button({
+      Title = "国外音乐脚本", 
+    Callback = function()         
+ loadstring(game:HttpGet(('https://pastebin.com/raw/g97RafnE'),true))()                   
+end
+}) 
+   music:Button({
+      Title = "国歌[Krx版]", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://1845918434" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "妈妈生的", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://6689498326" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "Music Ball-CTT", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://9045415830" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "电音", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://6911766512" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "梗合集", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://8161248815" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "Its been so long", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://6913550990" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "Baller", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://13530439660" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+})
+   music:Button({
+      Title = "男娘必听", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://6797864253" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "螃蟹之舞", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://54100886218" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "布鲁克林惨案", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://6783714255" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+}) 
+   music:Button({
+      Title = "航空模拟器音乐", 
+    Callback = function()
+         local sound = Instance.new("Sound") 
+     sound.SoundId = "rbxassetid://1838080629" 
+     sound.Parent = game.Workspace 
+     sound:Play() 
+     end
+})
+end
+})
+
+ui:Paragraph({
+    Title = "自定义界面",
+    Desc = "个性化您的体验",
+    Image = "palette",
+    ImageSize = 20,
+    Color = "White"
+})
+
+local themes = {}
+for themeName, _ in pairs(WindUI:GetThemes()) do
+    table.insert(themes, themeName)
+end
+table.sort(themes)
+
+local themeDropdown = ui:Dropdown({
+    Title = "主题选择",
+    Values = themes,
+    Value = "Dark",
+    Callback = function(theme)
+        WindUI:SetTheme(theme)
+        WindUI:Notify({
+            Title = "主题应用",
+            Content = theme,
+            Icon = "palette",
+            Duration = 2
+        })
+    end
+})
+
+local transparencySlider = ui:Slider({
+    Title = "透明度",
+    Value = { 
+        Min = 0,
+        Max = 1,
+        Default = 0.2,
+    },
+    Step = 0.1,
+    Callback = function(value)
+        Window:ToggleTransparency(tonumber(value) > 0)
+        WindUI.TransparencyValue = tonumber(value)
+    end
+})
+
+ui:Toggle({
+    Title = "启用黑色主题",
+    Desc = "使用黑色调主题方案",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = true,
+    Callback = function(state)
+        WindUI:SetTheme(state and "Dark" or "Light")
+        themeDropdown:Select(state and "Dark" or "Light")
+    end
+})
+
+ui:Button({
+    Title = "创建新主题",
+    Icon = "plus",
+    Callback = function()
+        Window:Dialog({
+            Title = "创建主题",
+            Content = "此功能很快就会推出",
+            Buttons = {
+                {
+                    Title = "确认",
+                    Variant = "Primary"
+                }
+            }
+        })
+    end
+})
+
+local themeDropdown = ui:Dropdown({
+    Title = "选择ui风格",
+    Multi = false,
+    AllowNone = false,
+    Value = nil,
+    Values = themeValues,
+    Callback = function(theme)
+        WindUI:SetTheme(theme)
+    end
+})
+themeDropdown:Select(WindUI:GetCurrentTheme())
+
+local ToggleTransparency = ui:Toggle({
+    Title = "设置ui透明",
+    Callback = function(e)
+        Window:ToggleTransparency(e)
+    end,
+    Value = WindUI:GetTransparency()
+})
+
+local fileNameInput = ""
+ui:Input({
+    Title = "输入文件名",
+    PlaceholderText = "请输入",
+    Callback = function(text)
+        fileNameInput = text
+    end
+})
+
+local cnm = "你好"
+ui:Button({
+    Title = "保存文件",
+    Callback = function()
+        if fileNameInput ~= "" then
+            SaveFile(fileNameInput, { cnm })
+        end
+    end
+})
+
+local currentThemeName = WindUI:GetCurrentTheme()
+local themes = WindUI:GetThemes()
+
+local ThemeAccent = themes[currentThemeName].Accent
+local ThemeOutline = themes[currentThemeName].Outline
+local ThemeText = themes[currentThemeName].Text
+local ThemePlaceholderText = themes[currentThemeName].PlaceholderText
+
+function updateTheme()
+    WindUI:AddTheme({
+        Name = currentThemeName,
+        Accent = ThemeAccent,
+        Outline = ThemeOutline,
+        Text = ThemeText,
+        PlaceholderText = ThemePlaceholderText
+    })
+    WindUI:SetTheme(currentThemeName)
+end
+
+local CreateInput = ui:Input({
+    Title = "ui风格名称",
+    Value = currentThemeName,
+    Callback = function(name)
+        currentThemeName = name
+    end
+})
+
+ui:Colorpicker({
+    Title = "背景颜色",
+    Default = Color3.fromHex(ThemeAccent),
+    Callback = function(color)
+        ThemeAccent = color:ToHex()
+    end
+})
+
+ui:Colorpicker({
+    Title = "边框颜色",
+    Default = Color3.fromHex(ThemeOutline),
+    Callback = function(color)
+        ThemeOutline = color:ToHex()
+    end
+})
+
+ui:Colorpicker({
+    Title = "文字颜色",
+    Default = Color3.fromHex(ThemeText),
+    Callback = function(color)
+        ThemeText = color:ToHex()
+    end
+})
+
+ui:Button({
+    Title = "更新ui",
+    Callback = function()
+        updateTheme()
+    end
+})
+
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local CoreGui = game:GetService("CoreGui")
+
+-- 配置表
+local config = {
+    targetLanguage = "zh-CN",
+    scanInterval = 2,
+    maxTextLength = 50000000,
+    translatePlayerNames = false,
+    translateGameTitles = false,
+    cacheEnabled = true,
+    logEnabled = true
+}
+
+local TARGET_LANGUAGE = config.targetLanguage
+local SCAN_INTERVAL = config.scanInterval
+local MAX_TEXT_LENGTH = config.maxTextLength
+
+local translatedCache = {}
+local translatedObjects = {}
+local isTranslationEnabled = false
+local connection = nil
+local translationHistory = {}
+local MAX_HISTORY = 50
+
+-- 使用表查找代替循环检查危险命令
+local DANGEROUS_COMMANDS = {
+    "neon", "shine", "ghost", "gold", "spin", 
+    "bighead", "smallhead", "giantdwarf", "squash"
+}
+
+local DANGEROUS_COMMANDS_LOOKUP = {}
+for _, cmd in ipairs(DANGEROUS_COMMANDS) do
+    DANGEROUS_COMMANDS_LOOKUP[cmd] = true
+end
+
+local SUPPORTED_UI_TYPES = {
+    "TextLabel", "TextButton", "TextBox", "TextLabel", 
+    "Frame", "ScrollingFrame", "ImageButton", "ImageLabel"
+}
+
+local LANGUAGE_PATTERNS = {
+    ["zh-CN"] = {
+        pattern = "[\199-\244][\128-\191]*[\128-\191]",
+        exclude = "[\227][\128-\191][\128-\191]"
+    },
+    ["zh-TW"] = {
+        pattern = "[\227][\128-\191][\128-\191]"
+    },
+    ["ja"] = {
+        pattern = "[\123-\125]|[\199-\244][\128-\191]*[\128-\191]",
+        exclude = "[\199-\244][\128-\191]*[\128-\191]"
+    },
+    ["ko"] = {
+        pattern = "[\234-\235][\128-\191][\128-\191]|[\236-\237][\128-\191][\128-\191]"
+    },
+    ["ar"] = {
+        pattern = "[\216-\219][\128-\191]"
+    },
+    ["ru"] = {
+        pattern = "[\208-\209][\128-\191]"
+    },
+    ["th"] = {
+        pattern = "[\224-\231][\128-\191]"
+    },
+    ["en"] = {
+        pattern = "[A-Za-z]",
+        exclude = "[\199-\244][\128-\191]*[\128-\191]"
+    }
+}
+
+-- 排除列表
+local excludeList = {
+    "PlayerGui",
+    "CoreGui",
+    "Chat",
+    "Notification",
+}
+
+-- 日志系统
+local function log(message, level)
+    if not config.logEnabled then return end
+    level = level or "INFO"
+    local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    print(string.format("[%s] [%s] %s", timestamp, level, message))
+end
+
+-- 优化危险文本检测
+local function isDangerousText(text)
+    if not text or type(text) ~= "string" then return false end
+    local lowerText = text:lower()
+    for word in lowerText:gmatch("%w+") do
+        if DANGEROUS_COMMANDS_LOOKUP[word] then
+            return true
+        end
+    end
+    return false
+end
+
+local function shouldSkipTranslation(text)
+    if not text or text == "" or translatedCache[text] then
+        return true
+    end
+    
+    if text:match("^%s*$") or 
+       text:match("^[0-9%.%s,:/]+$") or 
+       #text > MAX_TEXT_LENGTH or
+       isDangerousText(text) then
+        translatedCache[text] = text
+        return true
+    end
+    
+    return false
+end
+
+local function detectLanguage(text)
+    if not text or type(text) ~= "string" or text == "" then
+        return "en"
+    end
+    
+    if text:match(LANGUAGE_PATTERNS["zh-CN"].pattern) and 
+       (not LANGUAGE_PATTERNS["zh-CN"].exclude or not text:match(LANGUAGE_PATTERNS["zh-CN"].exclude)) then
+        return "zh-CN"
+    end
+    
+    if text:match(LANGUAGE_PATTERNS["zh-TW"].pattern) then
+        return "zh-TW"
+    end
+    
+    if text:match(LANGUAGE_PATTERNS["ja"].pattern) and 
+       (not LANGUAGE_PATTERNS["ja"].exclude or not text:match(LANGUAGE_PATTERNS["ja"].exclude)) then
+        return "ja"
+    end
+    
+    if text:match(LANGUAGE_PATTERNS["ko"].pattern) then
+        return "ko"
+    end
+    
+    if text:match(LANGUAGE_PATTERNS["ar"].pattern) then
+        return "ar"
+    end
+    
+    if text:match(LANGUAGE_PATTERNS["ru"].pattern) then
+        return "ru"
+    end
+    
+    if text:match(LANGUAGE_PATTERNS["th"].pattern) then
+        return "th"
+    end
+    
+    return "en"
+end
+
+local function shouldExcludeGui(gui)
+    for _, excludeName in ipairs(excludeList) do
+        if gui:IsA(excludeName) or gui.Name:find(excludeName) then
+            return true
+        end
+    end
+    return false
+end
+
+local function addToHistory(original, translated)
+    table.insert(translationHistory, 1, {
+        original = original,
+        translated = translated,
+        time = os.time()
+    })
+    
+    if #translationHistory > MAX_HISTORY then
+        table.remove(translationHistory, MAX_HISTORY + 1)
+    end
+end
+
+local function translate(text)
+    local success, result = pcall(function()
+        if shouldSkipTranslation(text) then
+            return translatedCache[text] or text
+        end
+
+        local sourceLang = detectLanguage(text)
+        
+        if sourceLang == "zh-CN" or sourceLang == "zh-TW" then
+            translatedCache[text] = text
+            return text
+        end
+
+        local success, response = pcall(function()
+            return game:HttpGet(
+                ("https://translate.googleapis.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s")
+                :format(sourceLang, TARGET_LANGUAGE, HttpService:UrlEncode(text))
+            )
+        end)
+
+        if success and response then
+            local ok, data = pcall(HttpService.JSONDecode, HttpService, response)
+            if ok and data and data[1] then
+                local translatedText = ""
+                for _, segment in ipairs(data[1]) do
+                    if segment[1] then
+                        translatedText = translatedText .. segment[1]
+                    end
+                end
+                
+                if translatedText ~= "" and translatedText ~= text then
+                    translatedCache[text] = translatedText
+                    addToHistory(text, translatedText)
+                    log("翻译: \"" .. text .. "\" -> \"" .. translatedText .. "\"")
+                    return translatedText
+                end
+            end
+        end
+
+        local function tryAlternativeAPI()
+            local success, response = pcall(function()
+                return game:HttpGet(
+                    ("https://api.mymemory.translated.net/get?q=%s&langpair=%s|%s")
+                    :format(HttpService:UrlEncode(text), sourceLang, TARGET_LANGUAGE)
+                )
+            end)
+            
+            if success and response then
+                local ok, data = pcall(HttpService.JSONDecode, HttpService, response)
+                if ok and data and data.responseData and data.responseData.translatedText then
+                    return data.responseData.translatedText
+                end
+            end
+            return nil
+        end
+
+        local altTranslation = tryAlternativeAPI()
+        if altTranslation then
+            translatedCache[text] = altTranslation
+            addToHistory(text, altTranslation)
+            log("备选API翻译: \"" .. text .. "\" -> \"" .. altTranslation .. "\"")
+            return altTranslation
+        end
+
+        translatedCache[text] = text
+        return text
+    end)
+    
+    if not success then
+        log("翻译出错: " .. tostring(result), "ERROR")
+        return text
+    end
+    
+    return result
+end
+
+local function hasTextContent(gui)
+    if gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox") then
+        return gui.Text and gui.Text ~= ""
+    elseif gui:IsA("ImageButton") or gui:IsA("ImageLabel") then
+        return gui:GetAttribute("Text") or gui.Name ~= ""
+    end
+    return false
+end
+
+local function getTextContent(gui)
+    if gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox") then
+        return gui.Text
+    elseif gui:IsA("ImageButton") or gui:IsA("ImageLabel") then
+        return gui:GetAttribute("Text") or gui.Name
+    end
+    return nil
+end
+
+local function setTextContent(gui, text)
+    if gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox") then
+        gui.Text = text
+    elseif gui:IsA("ImageButton") or gui:IsA("ImageLabel") then
+        gui:SetAttribute("OriginalText", getTextContent(gui))
+        gui:SetAttribute("Text", text)
+    end
+end
+
+local function setupGuiListeners()
+    -- 监听新GUI元素添加
+    local function onDescendantAdded(descendant)
+        if not isTranslationEnabled then return end
+        if shouldExcludeGui(descendant) then return end
+        
+        if hasTextContent(descendant) and not translatedObjects[descendant] then
+            local text = getTextContent(descendant)
+            if text and text ~= "" then
+                translatedObjects[descendant] = true
+                local translatedText = translate(text)
+                if getTextContent(descendant) == text then
+                    setTextContent(descendant, translatedText)
+                end
+            end
+        end
+    end
+    
+    -- 监听文本变化
+    local function onTextChanged(gui)
+        if not isTranslationEnabled or not translatedObjects[gui] then return end
+        if shouldExcludeGui(gui) then return end
+        
+        local text = getTextContent(gui)
+        if text and text ~= "" then
+            local translatedText = translate(text)
+            if getTextContent(gui) == text then
+                setTextContent(gui, translatedText)
+            end
+        end
+    end
+    
+    -- 为现有和新增元素设置监听
+    for _, gui in ipairs(playerGui:GetDescendants()) do
+        if (gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox")) and not shouldExcludeGui(gui) then
+            gui:GetPropertyChangedSignal("Text"):Connect(function()
+                onTextChanged(gui)
+            end)
+        end
+    end
+    
+    playerGui.DescendantAdded:Connect(onDescendantAdded)
+    CoreGui.DescendantAdded:Connect(onDescendantAdded)
+end
+
+local function scanAndTranslate()
+    local count = 0
+    
+    for _, gui in ipairs(playerGui:GetDescendants()) do
+        if shouldExcludeGui(gui) then
+            continue
+        end
+        
+        if not translatedObjects[gui] and hasTextContent(gui) then
+            local text = getTextContent(gui)
+            if text and text ~= "" then
+                translatedObjects[gui] = true
+                local translatedText = translate(text)
+                if getTextContent(gui) == text then
+                    setTextContent(gui, translatedText)
+                    count = count + 1
+                end
+            end
+        end
+    end
+    
+    for _, gui in ipairs(CoreGui:GetDescendants()) do
+        if shouldExcludeGui(gui) then
+            continue
+        end
+        
+        if not translatedObjects[gui] and hasTextContent(gui) then
+            local text = getTextContent(gui)
+            if text and text ~= "" then
+                translatedObjects[gui] = true
+                local translatedText = translate(text)
+                if getTextContent(gui) == text then
+                    setTextContent(gui, translatedText)
+                    count = count + 1
+                end
+            end
+        end
+    end
+    
+    return count
+end
+
+LC:Toggle({
+    Title = "自动翻译",
+    Icon = "bird",
+    Type = "Checkbox",
+    Default = false,
+    Callback = function(state)
+        isTranslationEnabled = state
+        if state then
+            log("自动翻译已开启，立即执行10次扫描")
+            
+            if connection then
+                connection:Disconnect()
+                connection = nil
+            end
+            
+            for i = 1, 10 do
+                local count = scanAndTranslate()
+                if count > 0 then
+                    log("第" .. i .. "次扫描翻译了 " .. count .. " 个文本")
+                end
+                task.wait(0.1) 
+            end
+            
+            -- 然后设置定期扫描
+            connection = RunService.Heartbeat:Connect(function()
+                if isTranslationEnabled then
+                    local count = scanAndTranslate()
+                    if count > 0 then
+                        log("自动扫描翻译了 " .. count .. " 个文本")
+                    end
+                    task.wait(SCAN_INTERVAL)
+                end
+            end)
+            
+            -- 设置GUI监听
+            setupGuiListeners()
+        else
+            if connection then
+                connection:Disconnect()
+                connection = nil
+            end
+            log("自动翻译已关闭")
+        end
+    end
+})
+
+LC:Button({
+    Title = "立即扫描翻译",
+    Callback = function()
+        local count = scanAndTranslate()
+        OrionLib:MakeNotification({
+            Title = "扫描完成",
+            Content = "翻译了 " .. count .. " 个文本",
+            Time = 5
+        })
+    end
+})
+
+LC:Button({
+    Title = "清空翻译缓存",
+    Callback = function()
+        translatedCache = {}
+        translatedObjects = {}
+        OrionLib:MakeNotification({
+            Title = "缓存已清空",
+            Content = "下次扫描将重新翻译所有文本",
+            Time = 5
+        })
+    end
+})
+
+LC:Slider({
+    Title = "目标语言",
+    Default = "zh-CN",
+    Options = {"zh-CN", "zh-TW", "en", "ja", "ko", "ru"},
+    Callback = function(value)
+        config.targetLanguage = value
+        TARGET_LANGUAGE = value
+        translatedCache = {} -- 清空缓存以重新翻译
+        log("目标语言已设置为: " .. value)
+    end
+})
+
+LC:Slider({
+    Title = "扫描间隔(秒)",
+    Min = 0.5,
+    Max = 10,
+    Default = 2,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 0.5,
+    Callback = function(value)
+        config.scanInterval = value
+        SCAN_INTERVAL = value
+        log("扫描间隔已设置为: " .. value .. "秒")
+    end
+})
+
+LC:Button({
+    Title = "翻译玩家名称",
+    Default = false,
+    Callback = function(state)
+        config.translatePlayerNames = state
+        log("翻译玩家名称: " .. (state and "开启" or "关闭"))
+    end
+})
+
+LC:Button({
+    Title = "翻译游戏标题",
+    Default = false,
+    Callback = function(state)
+        config.translateGameTitles = state
+        log("翻译游戏标题: " .. (state and "开启" or "关闭"))
+    end
+})
+
+
+
+LC:Input({
+    Title = "手动翻译",
+    Default = "输入要翻译的文本",
+    TextDisappear = true,
+    Callback = function(text)
+        if text and text ~= "" then
+            local translated = translate(text)
+            OrionLib:MakeNotification({
+                Title = "翻译结果",
+                Content = text .. " → " .. translated,
+                Time = 10
+            })
+        end
+    end
+})
+
+LC:Button({
+    Title = "查看翻译历史",
+    Callback = function()
+        local historyText = "最近翻译记录:\n\n"
+        for i, item in ipairs(translationHistory) do
+            if i > 5 then break end -- 只显示最近5条
+            historyText = historyText .. string.format("[%s] %s → %s\n", 
+                os.date("%H:%M:%S", item.time), 
+                item.original, 
+                item.translated)
+        end
+        
+        OrionLib:MakeNotification({
+            Title = "翻译历史",
+            Content = historyText,
+            Time = 15
+        })
+    end
+})
+
+-- 初始化
+task.spawn(function()
+    task.wait(3)
+    local count = scanAndTranslate()
+    if count > 0 then
+        log("初始扫描翻译了 " .. count .. " 个文本")
+    end
+    setupGuiListeners()
+end)
+
+drive:Button({
+        Title = "CARBlLlFE",
+        Desc = "加载CARBlLlFE=菜单",
+        Locked = false,
+        Callback = function()
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+            local StarterGui = game:GetService("StarterGui")
+            local RunService = game:GetService("RunService")
+            local TweenService = game:GetService("TweenService")
+            local UserInputService = game:GetService("UserInputService")
+            local VirtualInputManager = game:GetService("VirtualInputManager")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Camera = game:GetService('Workspace').CurrentCamera
+
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Humanoid
+            local HumanoidRootPart
+
+            local function SafeDebugPrint(message)
+                print("[DEBUG] " .. message)
+            end
+
+            local function InitializeHumanoid()
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                if character then
+                    Humanoid = character:FindFirstChild("Humanoid")
+                    if Humanoid then
+                        HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if not HumanoidRootPart then
+                            SafeDebugPrint("HumanoidRootPart not found for " .. LocalPlayer.Name)
+                        else
+                            SafeDebugPrint("HumanoidRootPart initialized for " .. LocalPlayer.Name)
+                        end
+                    else
+                        SafeDebugPrint("Humanoid not found for " .. LocalPlayer.Name)
+                    end
+                end
+            end
+
+            if LocalPlayer.Character then
+                InitializeHumanoid()
+            end
+
+            LocalPlayer.CharacterAdded:Connect(InitializeHumanoid)
+
+            local kenConfiguration = {
+                Main = {
+                    Combat = {
+                        AttackAura = false,
+                        AutoParry = false
+                    },
+                    Farm = {
+                        KillFarm = false,
+                        AutoUltimate = true
+                    }
+                },
+                Player = {
+                    Character = {
+                        OverwriteProperties = false,
+                        WalkSpeed = 50,
+                        JumpPower = 50
+                    }
+                }
+            }
+
+            local Functions = {}
+
+            function Functions.BestTarget(MaxDistance)
+                MaxDistance = MaxDistance or math.huge
+                local Target = nil
+                local MinKills = math.huge
+
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
+                        local rootPart = v.Character:FindFirstChild("HumanoidRootPart")
+                        if rootPart then
+                            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
+                            local kills = v:GetAttribute("Kills") or 0
+
+                            if distance < MaxDistance and kills < MinKills then
+                                Target = v
+                                MaxDistance = distance
+                                MinKills = kills
+                            end
+                        end
+                    end
+                end
+
+                SafeDebugPrint("Best target found: " .. (Target and Target.Name or "None"))
+                return Target
+            end
+
+            function Functions.UseAbility(Ability)
+                if not LocalPlayer.Character then
+                    return
+                end
+                local Tool = LocalPlayer.Backpack:FindFirstChild(Ability)
+                if Tool then
+                    SafeDebugPrint("Using ability: " .. Ability)
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            Tool = Tool,
+                            Goal = "Console Move",
+                            ToolName = tostring(Ability)
+                        }
+                    )
+                else
+                    SafeDebugPrint("Ability not found: " .. Ability)
+                end
+            end
+
+            function Functions.RandomAbility()
+                if not LocalPlayer.PlayerGui:FindFirstChild("Hotbar") then
+                    return nil
+                end
+                local Hotbar = LocalPlayer.PlayerGui.Hotbar.Backpack.Hotbar
+                local Abilities = {}
+
+                for _, v in pairs(Hotbar:GetChildren()) do
+                    if v.ClassName ~= "UIListLayout" and v.Visible and v.Base.ToolName.Text ~= "N/A" and not v.Base:FindFirstChild("Cooldown") then
+                        table.insert(Abilities, v)
+                    end
+                end
+
+                if #Abilities > 0 then
+                    local RandomAbility = Abilities[math.random(1, #Abilities)]
+                    return RandomAbility.Base.ToolName.Text
+                else
+                    SafeDebugPrint("No available abilities")
+                    return nil
+                end
+            end
+
+            function Functions.ActivateUltimate()
+                local UltimateBar = LocalPlayer:GetAttribute("Ultimate") or 0
+                if UltimateBar >= 100 then
+                    LocalPlayer.Character.Communicate:FireServer(
+                        {
+                            MoveDirection = Vector3.new(0, 0, 0),
+                            Key = Enum.KeyCode.G,
+                            Goal = "KeyPress"
+                        }
+                    )
+                    SafeDebugPrint("Ultimate activated")
+                else
+                    SafeDebugPrint("Ultimate not ready: " .. UltimateBar .. "%")
+                end
+            end
+
+            function Functions.TeleportUnderPlayer(player)
+                if not player.Character then
+                    return
+                end
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetCFrame = rootPart.CFrame * CFrame.new(0, -5, 0)
+                    LocalPlayer.Character:SetPrimaryPartCFrame(targetCFrame)
+                    SafeDebugPrint("Teleported under player: " .. player.Name)
+                else
+                    SafeDebugPrint("Failed to teleport under player: " .. player.Name)
+                end
+            end
+
+
+
+drive:Toggle({
+    Title = "自动刷钱", 
+    Default = false, 
+    Callback = function(Value)
+    AutoFarm = Value
+    if Value and not AutoFarmRunning then
+        coroutine.resume(AutoFarmFunc)
+    end
+end
+})
+end
+})
